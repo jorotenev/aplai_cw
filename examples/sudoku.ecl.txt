@@ -28,6 +28,8 @@ solve(ProblemName) :-
 sudoku(Board) :-
 	dim(Board, [N2,N2]),
 	N is integer(sqrt(N2)),
+    
+    % this says that each cell on the board can be between 1 and 9 (if N2 = 9)
 	Board[1..N2,1..N2] :: 1..N2,
 	( for(I,1,N2), param(Board,N2) do
 	    Row is Board[I,1..N2],
