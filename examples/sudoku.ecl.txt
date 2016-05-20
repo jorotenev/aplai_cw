@@ -36,6 +36,10 @@ sudoku(Board) :-
 	    alldifferent(Col)
 	),
 	( multifor([I,J],1,N2,N), param(Board,N) do
+    %georgi:multifore - just increment two different indeces, instead of one.
+    %georgi: the values of over the iterations I_J --> 
+    %georgi: 1_1   1_4   1_7   4_1   4_4   4_7   7_1   7_4   7_7 
+    %georgi: the foreach is used to create the SubSquare array(it is the X is Board..that inits the X, which in turns puts in the SubSquare...)
 	    ( multifor([K,L],0,N-1), param(Board,I,J), foreach(X,SubSquare) do
 		X is Board[I+K,J+L]
 	    ),
@@ -58,7 +62,7 @@ print_board(Board) :-
 %----------------------------------------------------------------------
 
 problem(1, [](
-    [](_, _, 2, _, _, 5, _, 7, 9),
+        [](_, _, 2, _, _, 5, _, 7, 9),
     [](1, _, 5, _, _, 3, _, _, _),
     [](_, _, _, _, _, _, 6, _, _),
     [](_, 1, _, 4, _, _, 9, _, _),
