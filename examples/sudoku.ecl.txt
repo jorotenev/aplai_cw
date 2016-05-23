@@ -16,10 +16,12 @@
 
 :- lib(ic).
 :- import alldifferent/1 from ic_global.
-
+%ProblemName = ID of sample data
 solve(ProblemName) :-
+	%define board linked with ID
 	problem(ProblemName, Board),
 	print_board(Board),
+	%modeling
 	sudoku(Board),
 	labeling(Board),
 	print_board(Board).
@@ -30,13 +32,19 @@ sudoku(Board) :-
 	N is integer(sqrt(N2)),
     
     % this says that each cell on the board can be between 1 and 9 (if N2 = 9)
+    %If a parameter remains constant across all loop iterations it must be specified explicitly (via param)
 	Board[1..N2,1..N2] :: 1..N2,
 	( for(I,1,N2), param(Board,N2) do
+	%Row is a list
 	    Row is Board[I,1..N2],
+	%constraint: all values must be different in a Row
 	    alldifferent(Row),
+	%Col is a list
 	    Col is Board[1..N2,I],
+	%constraint: all values must be different in a Col
 	    alldifferent(Col)
 	),
+	%constraint sudoku box constraint 3*3 every number must be unique in the matrix
 	( multifor([I,J],1,N2,N), param(Board,N) do
     %georgi:multifore - just increment two different indeces, instead of one.
     %georgi: the values of over the iterations I_J --> 
