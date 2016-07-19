@@ -1,9 +1,5 @@
-:- module(sudoku_problems).
-:- export puzzles/2.
-
 
 puzzles(P,verydifficult) :- verydifficult(P).
-puzzles(P,easy) :-veryeasy(P).
 puzzles(P,expert) :- expert(P).
 puzzles(P,lambda) :- lambda(P).
 puzzles(P,hard17) :- hard17(P).
@@ -16,30 +12,13 @@ puzzles(P,extra1) :- extra1(P).
 puzzles(P,extra2) :- extra2(P).
 puzzles(P,extra3) :- extra3(P).
 puzzles(P,extra4) :- extra4(P).
-%puzzles(P) :- fin(P).   % is the same as inkara2012
 puzzles(P,inkara2012) :- inkara2012(P).
 puzzles(P,clue18) :- clue18(P).
 puzzles(P,clue17) :- clue17(P).
 puzzles(P,sudowiki_nb28):- sudowiki_nb28(P).
 puzzles(P,sudowiki_nb49):- sudowiki_nb49(P).
-%De standaard online
-% http://www.standaard.be/artikel/detail.aspx?artikelid=DMF20120629_074
-% Fin bedenkt de moeilijkste sudoku ter wereld
-/*fin(P) :- P =    see inkara2012
-	[[8,_,_,_,_,_,_,_,_],
-	[_,_,3,6,_,_,_,_,_],
-	[_,7,_,_,9,_,2,_,_],
 
-	[_,5,_,_,_,7,_,_,_],
-    [_,_,_,_,4,5,7,_,_],
-	[_,_,_,1,_,_,_,3,_],
 
-	[_,_,1,_,_,_,_,6,8],
-	[_,_,8,5,_,_,_,1,_],
-	[_,9,_,_,_,_,4,_,_]].
-	 
-
-*/	
 verydifficult(P) :- P = 
 	[[_,_,8,7,_,_,_,_,6],
 	[4,_,_,_,_,9,_,_,_],
@@ -292,7 +271,7 @@ sudowiki_nb49(P) :- P = [
 	[_,7,_,_,_,6,_,_,8],
 	[4,_,_,_,_,_,_,2,_]].
 
-
+/*
 veryeasy(P) :- P = [
 	[_,_,_,_,_,_,_,_,_],
 	[_,_,_,_,_,_,_,_,_],
@@ -305,5 +284,4 @@ veryeasy(P) :- P = [
 	[_,_,_,_,_,_,_,_,_],
 	[_,_,_,_,_,_,_,_,_],
 	[_,_,_,_,_,_,_,_,_]].
-
-
+*/
