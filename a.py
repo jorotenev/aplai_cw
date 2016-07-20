@@ -1,4 +1,8 @@
 posibles = list(range(1,10))
+buckets = {}
+maybes = []
+for i in range(1,10):
+	buckets[i] = []
 
 line = "..7..9....6.8...1..9.23...8...7.46..7.6...9.3..56.3...6...81.9..1...2.4....3..56."	
 def pos(i):
@@ -11,18 +15,22 @@ for i, ch in enumerate(line):
 	if col == 10:
 		col = 1
 		row = row + 1
-	val = ch if ch != '.' else posibles
-	word = 'maybe' if ch == '.' else 'given'
-	s = "%s(%i-%i, %s)" % (word,row,col,str(val))
-	arr1.append(s)
+	if  ch != '.':
+		buckets[int(ch)].append("%i-%i" % (row, col))
+	else:
+		maybes.append("maybe(%i-%i, %s)" % (row,col,str(posibles)))
 	col = col + 1
-
+# combine
+[arr1.append("bucket(%i, %s)" % (i, buckets[i])) for i in buckets.keys() ]
 arr1.sort()
-# for e in arr1:
-# 	print (e)
+maybes.sort()
+arr1 = arr1 + maybes
+
 s = ''
-for el1 in arr1:
-	s = s + el1 + ', '
+for i, el1 in enumerate(arr1):
+	s = s + el1 
+	s = s + ', ' if i != len(arr1) - 1 else s + '.'
+s = s.replace('\'',"")
 print(s)
 
 a = ["given(9-9,1)",

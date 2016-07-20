@@ -12,48 +12,14 @@ asd(P) :- P = [[_,_,8,7,_,_,_,_,6],
 
 main :- puzzles(P,verydifficult), givens(P), maybes(P).
 
-givens(P) :-  recurseRow(P,1).
 
-maybes(P) :-  recurseRowM(P,1).
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Givens
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-recurseRow([],_).
-recurseRow([X|T], Row):-
-	recurseCol(X, Row, 1),
-	RowNext is Row + 1,
-	recurseRow(T, RowNext).
-
-recurseCol([], _, _).
-recurseCol([X|T],Row, Col):-
-	( integer(X) ->
-		write(Row-Col-X),
-		nl
+occurences(L, El, Res) :-  filter(L,El,Filtered), length(Filtered,Res).
+filter(List, El, Res) :- filter_(List,El,[], Res).
+filter_([], _, R, R).
+filter_([H|T], El, Filtered, Temp):- 
+	(
+		H == El ->
+		filter_(T, El, [H|Filtered],Temp)
 		;
-		true
-	),
-	Col2 is Col + 1,
-	recurseCol(T, Row, Col2).
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Maybes
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-recurseRowM([],_).
-recurseRowM([X|T], Row):-
-	recurseColM(X, Row, 1),
-	RowNext is Row + 1,
-	recurseRowM(T, RowNext).
-
-recurseColM([], _, _).
-recurseColM([X|T],Row, Col):-
-	( integer(X) ->
-		true
-		;
-		write(Row-Col-[1,2,3,4,5,6,7,8,9]),
-		nl
-		
-	),
-	Col2 is Col + 1,
-	recurseColM(T, Row, Col2).
+		filter_(T, El, Filtered,Temp)
+	).
