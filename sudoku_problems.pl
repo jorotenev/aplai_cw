@@ -17,7 +17,7 @@ puzzles(P,clue18) :- clue18(P).
 puzzles(P,clue17) :- clue17(P).
 puzzles(P,sudowiki_nb28):- sudowiki_nb28(P).
 puzzles(P,sudowiki_nb49):- sudowiki_nb49(P).
-
+puzzles(P,veryeasy):-veryeasy(P).
 
 verydifficult(P) :- P = 
 	[[_,_,8,7,_,_,_,_,6],
@@ -271,7 +271,7 @@ sudowiki_nb49(P) :- P = [
 	[_,7,_,_,_,6,_,_,8],
 	[4,_,_,_,_,_,_,2,_]].
 
-/*
+
 veryeasy(P) :- P = [
 	[_,_,_,_,_,_,_,_,_],
 	[_,_,_,_,_,_,_,_,_],
@@ -284,4 +284,4 @@ veryeasy(P) :- P = [
 	[_,_,_,_,_,_,_,_,_],
 	[_,_,_,_,_,_,_,_,_],
 	[_,_,_,_,_,_,_,_,_]].
-*/
+

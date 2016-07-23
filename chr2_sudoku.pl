@@ -1,3 +1,4 @@
+% load the puzzles
 :- [sudoku_problems].
 
 :- use_module(library(chr)).
@@ -12,25 +13,53 @@
 					bucket(+pos, +),
 					temp(+pos,+int).
 
+
+/*
+http://gecoder.org/examples/sudoku-set.html
+Create one set (bucket) per assignable number (i.e. 1..9). Each bucket contains the 
+positions of all squares that the number is located in. I.e. if the number 1
+is located at cells 1-1 and 4-3, then bucket(1,[1-1,4-3]).
+*/
+
+
 /********
 CHR Rules
 ********/ 
 
-convert @ temp(X-Y, Num) , bucket(Bucket, Coords) <=> Num =:= Bucket | bucket(Bucket, [X-Y | Coords]).
+%% convert & addToBucket achieve together adding a coordinate to a bucket.
+convert @ temp(X-Y, Num), bucket(Bucket, Coords) <=> Num =:= Bucket | bucket(Bucket, [X-Y | Coords]).
+
+%% makes sure that the contents of a bucket are always obeying the rules of the game
+sudoku @ bucket(_, Coords) ==> integrity(Coords).
 
 absorb @ maybe(X-Y, [N]), bucket(N, Vals) <=> bucket(N, [X-Y|Vals]).
 
-sudoku @ bucket(_, Coords) ==> integrity(Coords).
-
 addToBucket @ maybe(X-Y, Vals) <=> member(Num, Vals), temp(X-Y, Num).
-%% integrity @ bucket(_, Coords) ==> integrity(Coords).
 
-%% unique @ bucket(X, Coords), bucket(Y, Coords2) ==> intersectionSize(Coords, Coords2, IntrSize), IntrSize > 0  | X == Y.
 
 
 /******
 Helpers
 ******/
+main :- 
+	write("Starting now..."),
+	findall(X, puzzles(_,X), Problems),
+	main_(Problems).
+main_([]).
+main_([ProblemName | Rest]):-
+	write('Starting '), write(ProblemName),nl,
+	puzzles(P, ProblemName),
+	buckets(P),
+	maybes(P), !, 
+	chr_show_store(chr2_sudoku),
+	statistics(inferences, Inferences),
+	statistics(cputime, Time),
+	write("CPU Time: "), write(Time),nl,
+	write("Inferences: "),write(Inferences),nl,
+	write('Finish----^'),nl,
+	main_(Rest).
+
+	
 
 /*
 integrity(List)
@@ -49,7 +78,7 @@ integrity(Cells) :-
 
 /*
 intersectionSizeIsValid(List, 2DList)
-The predicate is true when for each of the sub-lists of @2DList,
+The predicate is true when, for each of the sub-lists of @2DList,
 the intersection of the sub-list with @List is less-or-equal to 1.
 */
 intersectionSizeIsValid(_, []).
@@ -99,14 +128,13 @@ col(X,Res) :- Res = [1-X, 2-X, 3-X, 4-X, 5-X, 6-X, 7-X, 8-X, 9-X].
 
 
 /**
-ugh. ugly code.
 block(number, List)
 The predicate is true when coordinates in the @List, are the coordinates of 
 cells in the @number-th block in the sudoku puzzle.
 */
 
 block(X, Res) :- 
-	magic(X, OffsetRatioRow, OffsetRatioCol),
+	fromNumberToCoordinates(X, OffsetRatioRow, OffsetRatioCol),
 	TR is OffsetRatioRow - 1,
 	TC is OffsetRatioCol - 1,
 	R is TR * 3,
@@ -121,7 +149,88 @@ fixList([(N1+R)-(N2+C) | Rest], [F-S | Temp]):-
 	S is N2 + C.
 
 
-magic(Num, RowResult, ColResult) :- 
+fromNumberToCoordinates(Num, RowResult, ColResult) :- 
 	TempNum is Num - 1,
-	RowResult is (div(TempNum, 3)+1),
-	ColResult is mod(TempNum,3) +1.
+	RowResult is (div(TempNum, 3) +1),
+	ColResult is mod(TempNum, 3) +1.
+
+
+
+/****
+Input
+****/
+
+
+/**
+@Result will hold a dict where the keys are numbers, and the values are arrays of X-Y coordinates
+e.g. for the expert puzzle
+buckets{
+	1:[],
+	2:[9-4,7-1,2-5],
+	3:[7-2,6-4,3-6,2-1],
+	4:[6-6,3-1],
+	5:[9-8,1-9],
+	6:[9-2,8-9,6-8,2-6],
+	7:[5-1,2-9],
+	8:[6-3,5-9,4-6,1-7],
+	9:[8-8,7-4,6-1,5-5]}
+*/
+buckets(P) :- 
+	emptyDict(EmptyBuckets), 
+	recurseRow(P,1, EmptyBuckets, FullBuckets), 
+	fromDictToChrRules(FullBuckets).
+	
+maybes(P) :-  recurseRowM(P,1).
+
+
+
+/*******
+Buckets
+*******/
+emptyDict(Dict):-
+	findall(X-[], between(1,9,X), Data), dict_create(Dict,buckets,Data).
+
+recurseRow([],_, Res,Res).
+recurseRow([X|T], Row, Dict, Temp):-
+	recurseCol(X, Row, 1, Dict, NewDict),
+	RowNext is Row + 1,
+	recurseRow(T, RowNext, NewDict, Temp).
+
+recurseCol([], _, _, Res, Res).
+recurseCol([X|T], Row, Col, Dict, Temp):-
+
+	(integer(X) ->
+		put_dict([X = [Row-Col|Dict.X]], Dict, NewDict)
+		;
+		NewDict = Dict
+	),
+	Col2 is Col + 1,
+	recurseCol(T, Row, Col2, NewDict, Temp).
+
+fromDictToChrRules(Dict):-
+	dict_pairs(Dict,_, Pairs),
+	createRules(Pairs, bucket).
+
+createRules([],_).
+createRules([X-Coords|Rest], ChrConstraint):-
+	call(ChrConstraint,X,Coords),
+	createRules(Rest, ChrConstraint).
+	
+/*****
+Maybes
+*****/
+recurseRowM([],_).
+recurseRowM([X|T], Row):-
+	recurseColM(X, Row, 1),
+	RowNext is Row + 1,
+	recurseRowM(T, RowNext).
+
+recurseColM([], _, _).
+recurseColM([X|T],Row, Col):-
+	(integer(X) ->
+		true
+		;
+		maybe(Row-Col, [1,2,3,4,5,6,7,8,9])
+	),
+	Col2 is Col + 1,
+	recurseColM(T, Row, Col2).
