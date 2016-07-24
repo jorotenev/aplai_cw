@@ -1,6 +1,6 @@
 % Symbols: every corner has 4 exits  N E S W corresponding to bits 1248
 %   
-:-module(shikakuprint).
+:-module(shikakuprint, [show/4]).
 :-export(show/4).
 init_format(unicode).
 init_format(ascii).
