@@ -17,54 +17,48 @@ absorb_maybe @ maybe(c(X,Y), [(c(TopX,TopY), s(Width,Height))]) <=>
 
 
 search @ maybe(c(X,Y), Possibilities) <=> 
-	member((c(TopX, TopY), s(W, H)), Possibilities), 
-	rect(c(X, Y), c(TopX, TopY), s(W, H)),
-	split((c(TopX, TopY), s(W, H)), Possibilities, Rest),
-	length(Rest,LenRest),
-	( LenRest > 0 ->
-		maybe(c(X,Y), Rest)
-		;
-		true
-	).
+	true
+    |	member((c(TopX, TopY), s(W, H)), Possibilities), rect(c(X, Y), c(TopX, TopY), s(W, H)).
 
 
-integrity @ rect(c(_, _), c(TopX1, TopY1), s(W1, H1)) , rect(c(_, _), c(TopX2, TopY2), s(W2, H2)) ==>
-	noOverlap((c(TopX1, TopY1), s(W1, H1)), (c(TopX2, TopY2), s(W2, H2))).
+noOverlaps(_,[]).
+noOverlaps(El, [El2|Rest]):-
+	noOverlap(El, El2),
+	noOverlaps(El, Rest).
+
+
+integrity @ rect(c(_, _), c(TopX1, TopY1), s(W1, H1)) , rect(c(_, _), c(TopX2, TopY2), s(W2, H2)) # passive <=>
+	\+noOverlap((c(TopX1, TopY1), s(W1, H1)), (c(TopX2, TopY2), s(W2, H2))) | false.
 
 
 solve(ProblemName):-
 	problem(ProblemName, GridW, GridH, Hints),
-	%% write(Hints),
-	makeMaybes(GridW, GridH, Hints),
-	show(GridW, GridH, Hints, chr).
+	makeMaybes(GridW, GridH, Hints, Hints),
+	show(GridW, GridH, Hints, chr),!,
+	statistics.
 
 /****
 Utils
 ****/
-noOverlap((c(TopX1, TopY1), s(W1, H1)), (c(TopX2, TopY2), s(W2, H2))) :-
-	TopX1 + (W1-1) < TopX2 
-	;
-	TopX2 + (W2-1) < TopX1
-	;
-	TopY1 + (H1-1) < TopY2
-	;
-	TopY2 + (H2-1) < TopY1.
 
-
-makeMaybes(_,_,[]).
-makeMaybes(GridW, GridH, [(X, Y, Val) | Rest]):-
-	check(GridW, GridH, X, Y, Val, Possibilities),
+makeMaybes(_,_,[],_).
+makeMaybes(GridW, GridH, [(X, Y, Val) | Rest], AllHints):-
+	check(GridW, GridH, X, Y, Val, AllHints, Possibilities),!,
 	maybe(c(X,Y), Possibilities),
-	makeMaybes(GridW, GridH, Rest).
+	makeMaybes(GridW, GridH, Rest, AllHints).
 
-%% noOverlap/2 + +
- 
 
-check(GridW, GridH, X, Y, Val, Result):- 
-	findall(Temp, check_(GridW, GridH, X, Y, Val, Temp), Result).
 
-check_(GridW, GridH, X, Y, Val, (c(TopX, TopY), s(W, H))) :-
-	%% write('asd'),
+check(GridW, GridH, X, Y, Val, AllHints, Result):- 
+	findall(
+		Temp, 
+		check_(GridW, GridH, X, Y, Val, AllHints, Temp), 
+		TempResult),
+	list_to_set(TempResult,Result).
+
+
+check_(GridW, GridH, X, Y, Val, AllHints, (c(TopX, TopY), s(W, H))) :-
+	
 	TopYLow is max(1,Y-(Val-1)),
 	TopXLow is max(1,X-(Val-1)), 
 
@@ -78,19 +72,20 @@ check_(GridW, GridH, X, Y, Val, (c(TopX, TopY), s(W, H))) :-
 	TopY + (H-1) =< GridH, 
 	
 	TopX + (W-1) >= X,
-	TopY + (H-1) >= Y.
+	TopY + (H-1) >= Y,
+	
+	delete(AllHints, (X,Y,Val), AllOtherHints),
+	does_not_contain((c(TopX, TopY), s(W, H)), AllOtherHints).
 
-	%% write('TopX is '), 
-	%% write(TopX), nl, write('TopY is '),
-	%% write(TopY),nl, write('W is '), 
-	%% write(W),nl, write('H is '), 
-	%% write(H),nl,write('============'),nl.
 
-split(El, List, Result) :- split_(El, List, _, Result).
+
+
+
+splitOn(El, List, Result) :- split_(El, List, _, Result).
 
 split_(_,[],R,R) :- 
 	var(R) ->
-		fail,!
+		R = []
 		;
 		true.
 
@@ -100,3 +95,27 @@ split_(El, [Curr|List], Result, Temp):-
 		split_(_, [], Result, Temp)
 		;
 		split_(El,List,Result,Temp)).
+
+
+noOverlap((c(TopX1, TopY1), s(W1, H1)), (c(TopX2, TopY2), s(W2, H2))) :-
+	TopX1 + (W1-1) < TopX2 
+	;
+	TopX2 + (W2-1) < TopX1
+	;
+	TopY1 + (H1-1) < TopY2
+	;
+	TopY2 + (H2-1) < TopY1.
+
+ 
+does_not_contain(_, []).
+does_not_contain((c(TopX, TopY), s(W, H)), [(OtherX,OtherY,_)|OtherHints]):-
+	(
+		TopX + W - 1 < OtherX
+		;
+		OtherX < TopX
+		;
+		TopY + H - 1 < OtherY
+		;
+		OtherY < TopY
+	),
+	does_not_contain((c(TopX, TopY), s(W, H)), OtherHints).

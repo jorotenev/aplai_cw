@@ -17,7 +17,7 @@ split(El, List, Result) :- split_(El, List, _, Result).
 
 split_(_,[],R,R) :- 
 	var(R) ->
-		fail,!
+		R = []
 		;
 		true.
 
