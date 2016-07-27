@@ -1,6 +1,6 @@
 :- use_module(library(chr)).
 %% :- chr_option(optimize, full).
-:- use_module(library(lists)).
+%% :- use_module(library(lists)).
 
 %% :- ensure_loaded(shikakuprint).
 %% :- ensure_loaded(shikakuproblems).
@@ -16,15 +16,12 @@
 CHR Rules
 **/
 
-%% empty @ maybe(_, []) ==> false.
+empty @ maybe(_, []) ==> false.
 
-%% absorb_maybe @ maybe(c(X,Y), [(c(TopX,TopY), s(Width,Height))]) <=> 
-%% 	rect(c(X,Y), c(TopX, TopY), s(Width,Height)).
+absorb_maybe @ maybe(c(X,Y), [(c(TopX,TopY), s(Width,Height))]) <=> 
+	rect(c(X,Y), c(TopX, TopY), s(Width,Height)).
 
 
-search @  maybe(c(X,Y), Possibilities) <=> 
-	member((c(TopX, TopY), s(W, H)), Possibilities), 
-	rect(c(X, Y), c(TopX, TopY), s(W, H)).
 
 
 % if the rects overlap, then fail. This will backtrack to the last member/2 in the search rule. 
@@ -37,15 +34,20 @@ integrity @ rect(c(_, _), c(TopX1, TopY1), s(W1, H1)) , rect(c(_, _), c(TopX2, T
 	rectsOverlap((c(TopX1, TopY1), s(W1, H1)), (c(TopX2, TopY2), s(W2, H2))) | false. 
 
 
+search @  can_start \ maybe(c(X,Y), Possibilities) <=> 
+	member((c(TopX, TopY), s(W, H)), Possibilities), 
+	rect(c(X, Y), c(TopX, TopY), s(W, H)).
 /****
 Utils
 ****/
 solve(ProblemName):-
 	problem(ProblemName, GridW, GridH, Hints),
-	makeMaybes(GridW, GridH, Hints, Hints),
+	time(makeMaybes(GridW, GridH, Hints, Hints)),!,
+	write("Maybes generated. CHR takes over now."),nl,
 	can_start,
-	show(GridW, GridH, Hints, chr),!,
-	statistics.
+	statistics,
+	show(GridW, GridH, Hints, chr),!
+	.
 
 makeMaybes(_,_,[],_):-!.
 makeMaybes(GridW, GridH, [(X, Y, Val) | Rest], AllHints):-
@@ -59,8 +61,8 @@ check(GridW, GridH, X, Y, Val, AllHints, Result):-
 	findall(
 		Temp, 
 		check_(GridW, GridH, X, Y, Val, AllHints, Temp), 
-		TempResult),
-	list_to_set(TempResult,Result).
+		TempResult),!,
+	list_to_set(TempResult,Result),!.
 
 
 check_(GridW, GridH, X, Y, Val, AllHints, (c(TopX, TopY), s(W, H))) :-
@@ -81,26 +83,9 @@ check_(GridW, GridH, X, Y, Val, AllHints, (c(TopX, TopY), s(W, H))) :-
 	TopY + (H-1) >= Y,
 	
 	delete(AllHints, (X,Y,Val), AllOtherHints),
+	%% subtract(AllHints, [(X,Y,Val)], AllOtherHints),
 	does_not_contain((c(TopX, TopY), s(W, H)), AllOtherHints).
 
-
-
-
-
-splitOn(El, List, Result) :- split_(El, List, _, Result).
-
-split_(_,[],R,R) :- 
-	var(R) ->
-		R = []
-		;
-		true.
-
-split_(El, [Curr|List], Result, Temp):- 
-	(El == Curr ->
-		Result = List,
-		split_(_, [], Result, Temp)
-		;
-		split_(El,List,Result,Temp)).
 
 rectsOverlap((C1, S1),(C2,S2)):-
 	\+ noOverlap((C1,S1),(C2,S2)).
@@ -115,7 +100,7 @@ noOverlap((c(TopX1, TopY1), s(W1, H1)), (c(TopX2, TopY2), s(W2, H2))) :-
 	(TopY2 + (H2-1) < TopY1,!).
 
  
-does_not_contain(_, []):-!.
+does_not_contain(_, []):- !.
 does_not_contain((c(TopX, TopY), s(W, H)), [(OtherX,OtherY,_)|OtherHints]):-
 	(
 		(TopX + W - 1 < OtherX, !)
