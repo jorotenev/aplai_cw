@@ -21,16 +21,13 @@ empty @ maybe(_, []) ==> false.
 absorb_maybe @ maybe(c(X,Y), [(c(TopX,TopY), s(Width,Height))]) <=> 
 	rect(c(X,Y), c(TopX, TopY), s(Width,Height)).
 
-
-
-
 % if the rects overlap, then fail. This will backtrack to the last member/2 in the search rule. 
 % Note that if member/2 has Possibilities left, the passive rect will *exist* in that new branch of member/2.
 % the passive pragma [1] here means that no mirror checks will be made because the rule will trigger only when
 % the active constraint matches the fisrt head.
 
 % [1] https://sicstus.sics.se/sicstus/docs/3.12.7/html/sicstus/CHR-Pragmas.html
-integrity @ rect(c(_, _), c(TopX1, TopY1), s(W1, H1)) , rect(c(_, _), c(TopX2, TopY2), s(W2, H2))  <=>
+integrity @ rect(c(_, _), c(TopX1, TopY1), s(W1, H1)) , rect(c(_, _), c(TopX2, TopY2), s(W2, H2))  # passive<=>
 	rectsOverlap((c(TopX1, TopY1), s(W1, H1)), (c(TopX2, TopY2), s(W2, H2))) | false. 
 
 
