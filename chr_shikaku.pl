@@ -10,38 +10,44 @@
 :- chr_constraint 	hint(+int, +int, +int).
 :- chr_constraint	maybe(+, +).  %% hint_coords [(top_coords, size),..]
 :- chr_constraint rect(+, +, +). %% hint_coords, c(TopX, TopY), s(W,H)
+:- chr_constraint can_start/0. %% the first time this is added to the store, is when all maybes have been added.
+
+/**
+CHR Rules
+**/
+
+%% empty @ maybe(_, []) ==> false.
+
+%% absorb_maybe @ maybe(c(X,Y), [(c(TopX,TopY), s(Width,Height))]) <=> 
+%% 	rect(c(X,Y), c(TopX, TopY), s(Width,Height)).
 
 
-absorb_maybe @ maybe(c(X,Y), [(c(TopX,TopY), s(Width,Height))]) <=> 
-	rect(c(X,Y), c(TopX, TopY), s(Width,Height)).
+search @  maybe(c(X,Y), Possibilities) <=> 
+	member((c(TopX, TopY), s(W, H)), Possibilities), 
+	rect(c(X, Y), c(TopX, TopY), s(W, H)).
 
 
-search @ maybe(c(X,Y), Possibilities) <=> 
-	true
-    |	member((c(TopX, TopY), s(W, H)), Possibilities), rect(c(X, Y), c(TopX, TopY), s(W, H)).
+% if the rects overlap, then fail. This will backtrack to the last member/2 in the search rule. 
+% Note that if member/2 has Possibilities left, the passive rect will *exist* in that new branch of member/2.
+% the passive pragma [1] here means that no mirror checks will be made because the rule will trigger only when
+% the active constraint matches the fisrt head.
 
+% [1] https://sicstus.sics.se/sicstus/docs/3.12.7/html/sicstus/CHR-Pragmas.html
+integrity @ rect(c(_, _), c(TopX1, TopY1), s(W1, H1)) , rect(c(_, _), c(TopX2, TopY2), s(W2, H2))  <=>
+	rectsOverlap((c(TopX1, TopY1), s(W1, H1)), (c(TopX2, TopY2), s(W2, H2))) | false. 
 
-noOverlaps(_,[]).
-noOverlaps(El, [El2|Rest]):-
-	noOverlap(El, El2),
-	noOverlaps(El, Rest).
-
-
-integrity @ rect(c(_, _), c(TopX1, TopY1), s(W1, H1)) , rect(c(_, _), c(TopX2, TopY2), s(W2, H2)) # passive <=>
-	\+noOverlap((c(TopX1, TopY1), s(W1, H1)), (c(TopX2, TopY2), s(W2, H2))) | false.
-
-
-solve(ProblemName):-
-	problem(ProblemName, GridW, GridH, Hints),
-	makeMaybes(GridW, GridH, Hints, Hints),
-	show(GridW, GridH, Hints, chr),!,
-	statistics.
 
 /****
 Utils
 ****/
+solve(ProblemName):-
+	problem(ProblemName, GridW, GridH, Hints),
+	makeMaybes(GridW, GridH, Hints, Hints),
+	can_start,
+	show(GridW, GridH, Hints, chr),!,
+	statistics.
 
-makeMaybes(_,_,[],_).
+makeMaybes(_,_,[],_):-!.
 makeMaybes(GridW, GridH, [(X, Y, Val) | Rest], AllHints):-
 	check(GridW, GridH, X, Y, Val, AllHints, Possibilities),!,
 	maybe(c(X,Y), Possibilities),
@@ -96,26 +102,28 @@ split_(El, [Curr|List], Result, Temp):-
 		;
 		split_(El,List,Result,Temp)).
 
+rectsOverlap((C1, S1),(C2,S2)):-
+	\+ noOverlap((C1,S1),(C2,S2)).
 
 noOverlap((c(TopX1, TopY1), s(W1, H1)), (c(TopX2, TopY2), s(W2, H2))) :-
-	TopX1 + (W1-1) < TopX2 
+	(TopX1 + (W1-1) < TopX2 , !)
 	;
-	TopX2 + (W2-1) < TopX1
+	(TopX2 + (W2-1) < TopX1 , !)
 	;
-	TopY1 + (H1-1) < TopY2
+	(TopY1 + (H1-1) < TopY2, !)
 	;
-	TopY2 + (H2-1) < TopY1.
+	(TopY2 + (H2-1) < TopY1,!).
 
  
-does_not_contain(_, []).
+does_not_contain(_, []):-!.
 does_not_contain((c(TopX, TopY), s(W, H)), [(OtherX,OtherY,_)|OtherHints]):-
 	(
-		TopX + W - 1 < OtherX
+		(TopX + W - 1 < OtherX, !)
 		;
-		OtherX < TopX
+		(OtherX < TopX , !)
 		;
-		TopY + H - 1 < OtherY
+		(TopY + H - 1 < OtherY, !)
 		;
-		OtherY < TopY
+		(OtherY < TopY, !)
 	),
 	does_not_contain((c(TopX, TopY), s(W, H)), OtherHints).
