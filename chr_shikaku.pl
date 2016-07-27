@@ -38,12 +38,16 @@ search @  can_start \ maybe(c(X,Y), Possibilities) <=>
 Utils
 ****/
 solve(ProblemName):-
+	write("Starting "),write(ProblemName),
 	problem(ProblemName, GridW, GridH, Hints),
 	time(makeMaybes(GridW, GridH, Hints, Hints)),!,
 	write("Maybes generated. CHR takes over now."),nl,
 	can_start,
+	%% call_with_time_limit(1, can_start),
 	statistics,
-	show(GridW, GridH, Hints, chr),!
+	%% show(GridW, GridH, Hints, chr),!,
+	nl,write("Finished"),write(ProblemName),nl
+
 	.
 
 makeMaybes(_,_,[],_):-!.
