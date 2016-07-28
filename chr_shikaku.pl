@@ -31,12 +31,31 @@ integrity @ rect(c(_, _), c(TopX1, TopY1), s(W1, H1)) , rect(c(_, _), c(TopX2, T
 	rectsOverlap((c(TopX1, TopY1), s(W1, H1)), (c(TopX2, TopY2), s(W2, H2))) | false. 
 
 
-search @  can_start \ maybe(c(X,Y), Possibilities) <=> 
+
+/* 
+it's ok for the maybe constraint to be passive. 
+we add maybes in two cases - in the beginning and when we prune conflicting elements of a maybe
+in the first case - the rule is irrelevant so the pragma is ok
+in the second case - the rule triggers when we add a new rect. This way, we use the 
+new knowledge we have (i.e. the rect itself) to prune the obviously wrong maybes.
+
+*/
+active_constraint @ rect(_, TopCoords, TopSize) \ maybe(MaybeHintCoords, Possibilities) # passive <=>
+	overlaps((TopCoords, TopSize), Possibilities, Overlaps),
+	length(Overlaps,Len),
+	Len > 0
+	|
+	subtract(Possibilities, Overlaps, NonConflictingMaybe),
+	maybe(MaybeHintCoords, NonConflictingMaybe).
+
+
+search @  can_start \ maybe(c(X,Y), Possibilities)  <=> 
 	member((c(TopX, TopY), s(W, H)), Possibilities), 
 	rect(c(X, Y), c(TopX, TopY), s(W, H)).
 /****
 Utils
 ****/
+
 solve(ProblemName):-
 	write("Starting "),write(ProblemName),
 	problem(ProblemName, GridW, GridH, Hints),
@@ -45,8 +64,8 @@ solve(ProblemName):-
 	can_start,
 	%% call_with_time_limit(1, can_start),
 	statistics,
-	%% show(GridW, GridH, Hints, chr),!,
-	nl,write("Finished"),write(ProblemName),nl
+	show(GridW, GridH, Hints, chr),!,
+	nl,write("Finished "),write(ProblemName),nl
 
 	.
 
@@ -113,3 +132,20 @@ does_not_contain((c(TopX, TopY), s(W, H)), [(OtherX,OtherY,_)|OtherHints]):-
 		(OtherY < TopY, !)
 	),
 	does_not_contain((c(TopX, TopY), s(W, H)), OtherHints).
+
+
+/**
+overlaps(Rect, Possibilities, Overlapping)
+given a rect, and a list of rects,
+Overlapping contains the rects in the list which 
+overlap with Rect.
+**/
+overlaps(_,[],[]):-!.
+overlaps(Rect, [Maybe|Possibilities], Result) :-
+	overlaps(Rect,Possibilities, Temp),
+	(
+	rectsOverlap(Rect, Maybe) ->
+		append(Temp, [Maybe], Result)
+		;
+		Result = Temp
+	).	
