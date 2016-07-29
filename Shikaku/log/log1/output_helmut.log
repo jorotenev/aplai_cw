@@ -1,0 +1,41 @@
+begin-- helmut
+Timeout is 300
+Starting helmut
+% 1,261,148 inferences, 0.136 CPU in 0.136 seconds (100% CPU, 9306828 Lips)
+Maybes generated. CHR takes over now.
+% Started at Fri Jul 29 16:28:31 2016
+% 0.839 seconds cpu time for 4,920,394 inferences
+% 8,635 atoms, 5,484 functors, 4,721 predicates, 69 modules, 398,379 VM-codes
+% 
+%                        Limit    Allocated       In use
+% Local  stack:    268,435,456      126,976        1,584 Bytes
+% Global stack:    268,435,456    1,044,464      515,728 Bytes
+% Trail  stack:    268,435,456      260,088        3,160 Bytes
+% 
+% 6 garbage collections gained 882,160 bytes in 0.003 seconds.
+% Stack shifts: 2 local, 4 global, 3 trail in 0.000 seconds
+% 1 threads, 0 finished threads used 0.000 seconds
+┌───────────┬───────────────┬───┬───────┐
+│ 9   .   . │ .   12  .   . │ 5 │ .   . │
+│           │               │   │       │
+│ .   .   . │ .   .   .   . │ . │ .   . │
+│           │               │   │       │
+│ .   .   . │ .   .   .   . │ . │ .   6 │
+├───────┬───┼───────────────┤   ├───────┤
+│ 8   . │ 6 │ .   8   .   . │ . │ .   . │
+│       │   │               │   │       │
+│ .   . │ . │ .   .   .   . │ . │ .   . │
+│       │   ├───────────┬───┴───┤       │
+│ .   . │ . │ .   .   . │ .   . │ .   . │
+│       │   │           │       │       │
+│ .   . │ . │ .   .   6 │ .   8 │ .   12│
+├───────┤   ├───────────┤       │       │
+│ 4   . │ . │ .   .   . │ .   . │ .   . │
+│       │   │           │       │       │
+│ .   . │ . │ .   .   . │ .   . │ .   . │
+├───────┴───┤           ├───────┴───────┤
+│ .   .   3 │ .   .   9 │ .   .   .   4 │
+└───────────┴───────────┴───────────────┘
+
+Finished helmut
+end-- helmut

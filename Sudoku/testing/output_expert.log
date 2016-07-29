@@ -1,0 +1,102 @@
+Welcome to SWI-Prolog (Multi-threaded, 64 bits, Version 7.2.3)
+Copyright (c) 1990-2015 University of Amsterdam, VU Amsterdam
+SWI-Prolog comes with ABSOLUTELY NO WARRANTY. This is free software,
+and you are welcome to redistribute it under certain conditions.
+Please visit http://www.swi-prolog.org for details.
+
+For help, use ?- help(Topic). or ?- apropos(Word).
+
+% Started at Fri Jul 29 18:39:16 2016
+% 5.472 seconds cpu time for 37,083,489 inferences
+% 8,566 atoms, 5,473 functors, 4,704 predicates, 68 modules, 384,594 VM-codes
+% 
+%                        Limit    Allocated       In use
+% Local  stack:    268,435,456      126,976        1,336 Bytes
+% Global stack:    268,435,456    1,044,464      609,816 Bytes
+% Trail  stack:    268,435,456      260,088       38,408 Bytes
+% 
+% 6 garbage collections gained 882,112 bytes in 0.003 seconds.
+% Stack shifts: 2 local, 4 global, 3 trail in 0.000 seconds
+% 1 threads, 0 finished threads used 0.000 seconds
+given(9-9,3)
+given(9-7,4)
+given(9-6,7)
+given(9-5,8)
+given(9-3,9)
+given(9-1,1)
+given(8-7,2)
+given(8-6,1)
+given(8-5,3)
+given(8-4,4)
+given(8-3,7)
+given(8-2,5)
+given(8-1,8)
+given(7-9,1)
+given(7-8,8)
+given(7-7,7)
+given(7-6,5)
+given(7-5,6)
+given(7-3,4)
+given(6-9,2)
+given(6-7,5)
+given(6-5,7)
+given(6-2,1)
+given(5-8,1)
+given(5-7,3)
+given(5-6,2)
+given(5-4,5)
+given(5-3,6)
+given(5-2,4)
+given(4-9,4)
+given(4-8,7)
+given(4-7,9)
+given(4-5,1)
+given(4-4,6)
+given(4-3,3)
+given(4-2,2)
+given(4-1,5)
+given(3-9,9)
+given(3-8,2)
+given(3-7,6)
+given(3-5,5)
+given(3-4,7)
+given(3-3,1)
+given(3-2,8)
+given(2-8,4)
+given(2-7,1)
+given(2-4,8)
+given(2-3,5)
+given(2-2,9)
+given(1-8,3)
+given(1-6,9)
+given(1-5,4)
+given(1-4,1)
+given(1-3,2)
+given(1-2,7)
+given(1-1,6)
+given(9-8,5)
+given(9-4,2)
+given(9-2,6)
+given(8-9,6)
+given(8-8,9)
+given(7-4,9)
+given(7-2,3)
+given(7-1,2)
+given(6-8,6)
+given(6-6,4)
+given(6-4,3)
+given(6-3,8)
+given(6-1,9)
+given(5-9,8)
+given(5-5,9)
+given(5-1,7)
+given(4-6,8)
+given(3-6,3)
+given(3-1,4)
+given(2-9,7)
+given(2-6,6)
+given(2-5,2)
+given(2-1,3)
+given(1-9,5)
+given(1-7,8)
+% halt
