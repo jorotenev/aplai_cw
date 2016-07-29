@@ -25,6 +25,7 @@ is located at cells 1-1 and 4-3, then bucket(1,[1-1,4-3]).
 /********
 CHR Rules
 ********/ 
+absorb @ maybe(X-Y, [N]), bucket(N, Vals) <=> bucket(N, [X-Y|Vals]).
 
 %% makes sure that the contents of a bucket are always obeying the rules of the game
 sudoku @ bucket(_, Coords) <=> \+integrity(Coords) | false.
@@ -33,7 +34,6 @@ sudoku @ bucket(_, Coords) <=> \+integrity(Coords) | false.
 convert @ temp(X-Y, Num), bucket(Bucket, Coords) # passive  <=> Num =:= Bucket | bucket(Bucket, [X-Y | Coords]).
 
 
-absorb @ maybe(X-Y, [N]), bucket(N, Vals) <=> bucket(N, [X-Y|Vals]).
 
 addToBucket @ maybe(X-Y, Vals) <=> member(Num, Vals), temp(X-Y, Num).
 
