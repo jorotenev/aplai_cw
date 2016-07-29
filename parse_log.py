@@ -12,13 +12,15 @@ searchPattern = re.compile("^% (\d+\.\d+|\d+) seconds cpu time for (\S+) inferen
 
 def getLineStartingWith(contentList, lineprefix):
 	return [c for c in contentList if c.startswith(lineprefix)][0]
+
 def getTimeout(content):
-
-	line=getLineStartingWith(content,'Timeout is ')
-	p = timeoutPattern
-	a = re.match(p, line).groups()
-	return a[0]
-
+	try:
+		line = getLineStartingWith(content,'Timeout is ')
+		p = timeoutPattern
+		a = re.match(p, line).groups()
+		return a[0]
+	except Exception as ex:
+		print(ex)
 
 def readFile(file):
 	with open(logDir+file, 'r') as logFile:
@@ -42,7 +44,7 @@ def getSearchStatistics(content, genSecs):
 		p = searchPattern
 		seconds,inferences = re.match(p, line).groups()
 		assert seconds and inferences
-		seconds= Decimal(seconds)
+		seconds = Decimal(seconds)
 		genSecs =Decimal(genSecs)
 		seconds = seconds - genSecs
 
@@ -55,12 +57,14 @@ def getSearchStatistics(content, genSecs):
 def runBaby(files, logDir):
 	files.sort()
 	lines = []
+	timeout = -1
 	for file in files:
 		logContent = readFile(file)
 		problemName = getProblemName(logContent)
 		# print(problemName)
 
-		timeout = getTimeout(logContent)
+		timeout = getTimeout(logContent) 
+		timeout = timeout if timeout else -1
 		# print(timeout)
 		genSecs, genInf = problemGenerationInferencesAndTime(logContent)
 		# print(genSecs, genInf)
@@ -73,12 +77,12 @@ def runBaby(files, logDir):
 	headers = ['Name', 'Problem generation time', 'Search Time']
 	table =  tabulate(lines, headers=headers, tablefmt='latex_booktabs')
 	iteration = logDir.replace('log', "").replace('/','')
-	caption ='\caption{%s}' % 'Iteration %s. Time is in seconds.'%iteration+'\n'
+	caption ='\caption{%s}' % 'Iteration %s. Time is in seconds. Maximum run-time limit is %s '%(iteration, timeout)+'\n'
 	label = '\label{tab:%s}'%iteration+'\n'
 	table = '\\begin{table}\n' +caption+ label+table + '\end{table}'
 	with open( logDir+'RESULT.latex','w') as save_file:
 		print(table, file=save_file) 	
-		print(table) 	
+		# print(table) 	
 
 
 

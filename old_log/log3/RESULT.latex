@@ -1,6 +1,6 @@
 \begin{table}
-\caption{Iteration 3. Time is in seconds.}
-\label{tab:3}
+\caption{Iteration old_3. Time is in seconds. Maximum run-time limit is 600 }
+\label{tab:old_3}
 \begin{tabular}{lrl}
 \toprule
  Name   &   Problem generation time & Search Time   \\
