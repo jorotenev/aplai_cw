@@ -26,11 +26,12 @@ is located at cells 1-1 and 4-3, then bucket(1,[1-1,4-3]).
 CHR Rules
 ********/ 
 
-%% convert & addToBucket achieve together adding a coordinate to a bucket.
-convert @ temp(X-Y, Num), bucket(Bucket, Coords) <=> Num =:= Bucket | bucket(Bucket, [X-Y | Coords]).
-
 %% makes sure that the contents of a bucket are always obeying the rules of the game
-sudoku @ bucket(_, Coords) ==> integrity(Coords).
+sudoku @ bucket(_, Coords) <=> \+integrity(Coords) | false.
+
+%% convert & addToBucket achieve together adding a coordinate to a bucket.
+convert @ temp(X-Y, Num), bucket(Bucket, Coords) # passive  <=> Num =:= Bucket | bucket(Bucket, [X-Y | Coords]).
+
 
 absorb @ maybe(X-Y, [N]), bucket(N, Vals) <=> bucket(N, [X-Y|Vals]).
 
@@ -41,23 +42,17 @@ addToBucket @ maybe(X-Y, Vals) <=> member(Num, Vals), temp(X-Y, Num).
 /******
 Helpers
 ******/
-main :- 
-	write("Starting now..."),
-	findall(X, puzzles(_,X), Problems),
-	main_(Problems).
-main_([]).
-main_([ProblemName | Rest]):-
+
+
+solve(ProblemName):-
 	write('Starting '), write(ProblemName),nl,
 	puzzles(P, ProblemName),
 	buckets(P),
 	maybes(P), !, 
 	chr_show_store(chr2_sudoku),
-	statistics(inferences, Inferences),
-	statistics(cputime, Time),
-	write("CPU Time: "), write(Time),nl,
-	write("Inferences: "),write(Inferences),nl,
-	write('Finish----^'),nl,
-	main_(Rest).
+	statistics.
+
+
 
 	
 

@@ -3,14 +3,16 @@ testt=("verydifficult" "expert")
 iteration=$1
 
 pwd
-rm -rf log$iteration 
-mkdir log$iteration
 limit=$2
+viewpoint=$3
+rm -rf $viewpoint/log$iteration 
+mkdir $viewpoint/log$iteration
 for i in ${problems[@]}; do
-	output_file=log$iteration/output_$i.log
+	output_file=$viewpoint/log$iteration/output_$i.log
 	echo $i
 	echo "begin-- $i" >> $output_file
 	echo "Timeout is $limit" >> $output_file
-	timeout --foreground -k 3 $limit swipl -q -s chr_sudoku.pl -t "solve($i)." &>> $output_file
+	file="chr"$viewpoint"_sudoku.pl"
+	timeout --foreground -k 3 $limit swipl -q -s $file -t "solve($i)." &>> $output_file
 	echo "end-- $i" >> $output_file
 done
