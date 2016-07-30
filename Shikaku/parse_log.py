@@ -28,12 +28,15 @@ def readFile(file):
 	    return [s.strip() for s in data]
 
 def problemGenerationInferencesAndTime(content):
-	line = content[3]
-	assert 'inferences' in line and 'CPU' in line
+	try:
+		line = content[3]
+		assert 'inferences' in line and 'CPU' in line
 
-	p = generationPattern
-	a = re.match(p,line).groups()
-	return a[1],a[0]
+		p = generationPattern
+		a = re.match(p,line).groups()
+		return a[1],a[0]
+	except:
+		return "FAIL", "FAIL"
 
 def getProblemName(content):
 	return content[0].replace('begin-- ', '')
@@ -59,6 +62,7 @@ def runBaby(files, logDir):
 	lines = []
 	timeout = -1
 	for file in files:
+		print(file)
 		logContent = readFile(file)
 		problemName = getProblemName(logContent)
 		# print(problemName)

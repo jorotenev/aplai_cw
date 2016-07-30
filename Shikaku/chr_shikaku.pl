@@ -54,7 +54,7 @@ every time we add a new rect from the rule, when Applying the rect, the rule wil
 Instead, if we use simplification(the current state), the rule will start only when the 
 created rect rule applications are done.
 */
-search @  can_start \ maybe(c(X,Y), Possibilities) <=> 
+search @  maybe(c(X,Y), Possibilities) <=> 
 	member((c(TopX, TopY), s(W, H)), Possibilities), 
 	rect(c(X, Y), c(TopX, TopY), s(W, H)).
 /****
