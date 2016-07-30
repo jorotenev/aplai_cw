@@ -20,7 +20,7 @@ CHR Rules
 **/
 
 
-%% empty @ maybe(_, []) ==>  false.
+empty @ maybe(_, []) ==>  false.
 
 absorb_maybe @ maybe(c(X,Y), [(c(TopX,TopY), s(Width,Height))]) <=>  
 	rect(c(X,Y), c(TopX, TopY), s(Width,Height)).
@@ -39,12 +39,12 @@ integrity @ rect(c(_, _), c(TopX1, TopY1), s(W1, H1)) , rect(c(_, _), c(TopX2, T
 	the rule triggers only when we add a new rect. This way, we use the 
 	new knowledge we have (i.e. the rect itself) to prune the obviously wrong maybes.
 */
-%% active_constraint @ rect(_, TopCoords, TopSize)  \ maybe(MaybeHintCoords, Possibilities) <=>
-%% 	overlaps((TopCoords, TopSize), Possibilities,[], Overlaps),
-%% 	Overlaps \= []
-%% 	|
-%% 	subtract(Possibilities, Overlaps, NonConflictingMaybe),
-%% 	maybe(MaybeHintCoords, NonConflictingMaybe).
+active_constraint @ rect(_, TopCoords, TopSize)  \ maybe(MaybeHintCoords, Possibilities) <=>
+	overlaps((TopCoords, TopSize), Possibilities,[], Overlaps),
+	Overlaps \= []
+	|
+	subtract(Possibilities, Overlaps, NonConflictingMaybe),
+	maybe(MaybeHintCoords, NonConflictingMaybe).
 
 
 /* 
@@ -54,7 +54,7 @@ every time we add a new rect from the rule, when Applying the rect, the rule wil
 Instead, if we use simplification(the current state), the rule will start only when the 
 created rect rule applications are done.
 */
-search @  maybe(c(X,Y), Possibilities) <=> 
+search @  can_start \ maybe(c(X,Y), Possibilities) <=> 
 	member((c(TopX, TopY), s(W, H)), Possibilities), 
 	rect(c(X, Y), c(TopX, TopY), s(W, H)).
 /****

@@ -1,0 +1,35 @@
+begin-- p(1,3)
+Timeout is 90
+Starting p(1,3)
+% 16,340 inferences, 0.002 CPU in 0.002 seconds (96% CPU, 7238644 Lips)
+Maybes generated. CHR takes over now.
+% Started at Sat Jul 30 14:23:36 2016
+% 0.798 seconds cpu time for 3,713,299 inferences
+% 8,655 atoms, 5,491 functors, 4,730 predicates, 69 modules, 399,737 VM-codes
+% 
+%                        Limit    Allocated       In use
+% Local  stack:    268,435,456      126,976        8,616 Bytes
+% Global stack:    268,435,456    1,044,464      679,208 Bytes
+% Trail  stack:    268,435,456      260,088        5,264 Bytes
+% 
+% 6 garbage collections gained 882,160 bytes in 0.003 seconds.
+% Stack shifts: 2 local, 4 global, 3 trail in 0.000 seconds
+% 1 threads, 0 finished threads used 0.000 seconds
+┌───────────┬───────────────┐
+│ 3   .   . │ .   .   .   4 │
+├───┬───────┴───────────┬───┤
+│ . │ .   .   5   .   . │ 2 │
+│   ├───────┬───────────┤   │
+│ 2 │ 2   . │ .   3   . │ . │
+├───┴───────┴───────────┼───┤
+│ .   .   6   .   .   . │ . │
+├───────────────────┬───┤   │
+│ .   .   .   5   . │ . │ 3 │
+├───────────┬───────┤   │   │
+│ .   .   3 │ 2   . │ 2 │ . │
+├───────────┴───────┴───┴───┤
+│ .   .   .   .   7   .   . │
+└───────────────────────────┘
+
+Finished p(1,3)
+end-- p(1,3)

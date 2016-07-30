@@ -1,0 +1,6 @@
+begin-- p(5,3)
+Timeout is 90
+Starting p(5,3)
+% 11,185,489 inferences, 1.062 CPU in 1.062 seconds (100% CPU, 10535060 Lips)
+Maybes generated. CHR takes over now.
+end-- p(5,3)

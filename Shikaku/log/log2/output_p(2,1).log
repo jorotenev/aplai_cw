@@ -1,0 +1,41 @@
+begin-- p(2,1)
+Timeout is 90
+Starting p(2,1)
+% 71,190 inferences, 0.009 CPU in 0.009 seconds (100% CPU, 8148982 Lips)
+Maybes generated. CHR takes over now.
+% Started at Sat Jul 30 14:23:39 2016
+% 0.710 seconds cpu time for 3,766,998 inferences
+% 8,655 atoms, 5,491 functors, 4,730 predicates, 69 modules, 399,737 VM-codes
+% 
+%                        Limit    Allocated       In use
+% Local  stack:    268,435,456      126,976        5,328 Bytes
+% Global stack:    268,435,456    1,044,464      735,464 Bytes
+% Trail  stack:    268,435,456      260,088       10,672 Bytes
+% 
+% 6 garbage collections gained 882,160 bytes in 0.003 seconds.
+% Stack shifts: 2 local, 4 global, 3 trail in 0.000 seconds
+% 1 threads, 0 finished threads used 0.000 seconds
+┌───┬───────────┬───────┬───┬───┬───┬───┐
+│ . │ 9   .   . │ 2   . │ . │ 2 │ . │ . │
+│   │           ├───────┤   │   │   │   │
+│ 2 │ .   .   . │ 2   . │ . │ . │ . │ 2 │
+├───┤           ├───────┤   ├───┤   ├───┤
+│ 2 │ .   .   . │ 2   . │ 3 │ 2 │ . │ . │
+│   ├───┬───┬───┴───────┴───┤   │   │   │
+│ . │ 2 │ 2 │ 4   .   .   . │ . │ . │ . │
+├───┤   │   ├───────────────┴───┤   │   │
+│ . │ . │ . │ .   .   5   .   . │ . │ 6 │
+│   ├───┴───┴───────────┬───────┤   │   │
+│ . │ .   .   .   .   . │ .   . │ . │ . │
+│   │                   │       │   │   │
+│ 4 │ 10  .   .   .   . │ .   8 │ 8 │ . │
+│   ├───────┬───────────┤       │   │   │
+│ . │ 6   . │ .   .   . │ .   . │ . │ . │
+├───┤       │           │       ├───┴───┤
+│ . │ .   . │ 6   .   . │ .   . │ 2   . │
+│   │       ├───────┬───┴───────┴───────┤
+│ 2 │ .   . │ .   2 │ .   5   .   .   . │
+└───┴───────┴───────┴───────────────────┘
+
+Finished p(2,1)
+end-- p(2,1)
