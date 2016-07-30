@@ -3,14 +3,14 @@
 
 :- use_module(library(chr)).
 :- use_module(library(lists)).
-:- chr_option(optimize,full).
+%% :- chr_option(optimize,full).
 
 :- chr_type pos ---> row-col.
 :- chr_type row == int.
 :- chr_type col == int.
 
 :- chr_constraint 	maybe(+pos, +),
-					bucket(+pos, +),
+					bucket(+int, +),
 					temp(+pos,+int),
 					can_start/0.
 
@@ -22,17 +22,24 @@ positions of all squares that the number is located in. I.e. if the number 1
 is located at cells 1-1 and 4-3, then bucket(1,[1-1,4-3]).
 */
 
+/*
+todo
+if bucket is full it has all numbers
+*/
 
 /********
--CHR Rules
+CHR Rules
 ********/ 
-sudoku @ bucket(_, Coords) <=> \+ integrity(Coords) | false.
+sudoku @ bucket(_, Coords) <=>  \+ integrity(Coords) | false.
 
 absorb @ maybe(X-Y, [N]) <=> temp(X-Y, N).
 
-convert @ temp(X-Y, Num), bucket(Bucket, Coords) # passive <=> Num =:= Bucket | bucket(Num, [X-Y | Coords]).
+convert @ temp(X-Y, Num), bucket(Bucket, Coords) # passive  <=> Num =:= Bucket | bucket(Num, [X-Y | Coords]).
 
-addToBucket @ can_start , maybe(X-Y, Vals)  <=> member(Num, Vals), temp(X-Y, Num), can_start.
+% MUST be after the "convert" rule.
+tempb4bucket @ temp(X-Y,Num) <=> bucket(Num, [X-Y]).
+
+addToBucket @ can_start, maybe(X-Y, Vals) # passive <=> member(Num, Vals), temp(X-Y, Num),can_start.
 
 
 
@@ -42,8 +49,8 @@ Helpers
 solve(ProblemName):-
 	write('Starting '), write(ProblemName),nl,
 	puzzles(P, ProblemName),
-	buckets(P),
-	maybes(P), !, 
+	buckets(P, Dict),
+	maybes(P, Dict), !, 
 	can_start,
 	chr_show_store(chr2_sudoku),
 	statistics.
@@ -60,20 +67,21 @@ in each row, col and block.
 integrity([]):-!.
 integrity(Cells) :-
 	all_diff(Cells),
-	genAllRowPositions(Rows),
+	readyRows(Rows),
 	intersectionSizeIsValid(Cells, Rows),
-	genAllColPositions(Cols), % Block checks will also be added later.
+	readyCols(Cols), 
 	intersectionSizeIsValid(Cells, Cols),
-	genAllBlockPositions(Blocks),
+	readyBlocks(Blocks),
 	intersectionSizeIsValid(Cells, Blocks).
 	
+
 
 /*
 intersectionSizeIsValid(List, 2DList)
 The predicate is true when, for each of the sub-lists of @2DList,
 the intersection of the sub-list with @List is less-or-equal to 1.
 */
-intersectionSizeIsValid(_, []).
+intersectionSizeIsValid(_, []):-!.
 intersectionSizeIsValid(Cells, [CurrList| Rest]):-
 	intersectionSize(Cells, CurrList, IntrSize),
 	IntrSize =< 1,
@@ -87,7 +95,7 @@ between @List1 and @List2 is equal to IntersectionSize
 
 @List2 *must* be non empty
 */
-intersectionSize([],_,0).
+intersectionSize([],_,0):-!.
 intersectionSize([H|T], L, NewSize):-
 	intersectionSize(T, L, Res),
 	(
@@ -99,6 +107,8 @@ intersectionSize([H|T], L, NewSize):-
 
 
 /*
+Note, that we use ready[Rows,Cols,Blocks]/1 for efficiency reasons.
+
 genAllRowPositions(2DList) / genAllColPositions(2DList)
 The predicate is true when the @2DList is a 2d list with all row/col/block positions
 e.g. for row: [[1-1,1-2,1-3, ...], [2-1,2-2,2-3, ...], ...]
@@ -147,6 +157,44 @@ fromNumberToCoordinates(Num, RowResult, ColResult) :-
 	ColResult is mod(TempNum, 3) +1.
 
 
+% this is the output of using genAll[Row,Col,Block]Positions/1
+% we use the predicates below for efficiency reasons.
+readyRows(Rows):- Rows=
+	[
+		[9-1,9-2,9-3,9-4,9-5,9-6,9-7,9-8,9-9],
+		[8-1,8-2,8-3,8-4,8-5,8-6,8-7,8-8,8-9],
+		[7-1,7-2,7-3,7-4,7-5,7-6,7-7,7-8,7-9],
+		[6-1,6-2,6-3,6-4,6-5,6-6,6-7,6-8,6-9],
+		[5-1,5-2,5-3,5-4,5-5,5-6,5-7,5-8,5-9],
+		[4-1,4-2,4-3,4-4,4-5,4-6,4-7,4-8,4-9],
+		[3-1,3-2,3-3,3-4,3-5,3-6,3-7,3-8,3-9],
+		[2-1,2-2,2-3,2-4,2-5,2-6,2-7,2-8,2-9],
+		[1-1,1-2,1-3,1-4,1-5,1-6,1-7,1-8,1-9]
+	].
+readyCols(Cols):- Cols = [
+		[1-9,2-9,3-9,4-9,5-9,6-9,7-9,8-9,9-9],
+		[1-8,2-8,3-8,4-8,5-8,6-8,7-8,8-8,9-8],
+		[1-7,2-7,3-7,4-7,5-7,6-7,7-7,8-7,9-7],
+		[1-6,2-6,3-6,4-6,5-6,6-6,7-6,8-6,9-6],
+		[1-5,2-5,3-5,4-5,5-5,6-5,7-5,8-5,9-5],
+		[1-4,2-4,3-4,4-4,5-4,6-4,7-4,8-4,9-4],
+		[1-3,2-3,3-3,4-3,5-3,6-3,7-3,8-3,9-3],
+		[1-2,2-2,3-2,4-2,5-2,6-2,7-2,8-2,9-2],
+		[1-1,2-1,3-1,4-1,5-1,6-1,7-1,8-1,9-1]
+	].
+
+readyBlocks(Blocks):- Blocks = [
+		[7-7,7-8,7-9,8-7,8-8,8-9,9-7,9-8,9-9],
+		[7-4,7-5,7-6,8-4,8-5,8-6,9-4,9-5,9-6],
+		[7-1,7-2,7-3,8-1,8-2,8-3,9-1,9-2,9-3],
+		[4-7,4-8,4-9,5-7,5-8,5-9,6-7,6-8,6-9],
+		[4-4,4-5,4-6,5-4,5-5,5-6,6-4,6-5,6-6],
+		[4-1,4-2,4-3,5-1,5-2,5-3,6-1,6-2,6-3],
+		[1-7,1-8,1-9,2-7,2-8,2-9,3-7,3-8,3-9],
+		[1-4,1-5,1-6,2-4,2-5,2-6,3-4,3-5,3-6],
+		[1-1,1-2,1-3,2-1,2-2,2-3,3-1,3-2,3-3]
+	].
+
 
 /****
 Input
@@ -158,6 +206,7 @@ Input
 e.g. for the expert puzzle
 buckets{
 	1:[],
+
 	2:[9-4,7-1,2-5],
 	3:[7-2,6-4,3-6,2-1],
 	4:[6-6,3-1],
@@ -167,12 +216,12 @@ buckets{
 	8:[6-3,5-9,4-6,1-7],
 	9:[8-8,7-4,6-1,5-5]}
 */
-buckets(P) :- 
+buckets(P, FullBuckets) :- 
 	emptyDict(EmptyBuckets), 
 	recurseRow(P,1, EmptyBuckets, FullBuckets), 
 	fromDictToChrRules(FullBuckets).
 	
-maybes(P) :-  recurseRowM(P,1).
+maybes(P,Dict) :-  recurseRowM(P,1,Dict).
 
 
 
@@ -211,18 +260,31 @@ createRules([X-Coords|Rest], ChrConstraint):-
 /*****
 Maybes
 *****/
-recurseRowM([],_).
-recurseRowM([X|T], Row):-
-	recurseColM(X, Row, 1),
+recurseRowM([],_,_):-!.
+recurseRowM([X|T], Row,Dict):-
+	recurseColM(X, Row, 1,Dict),
 	RowNext is Row + 1,
-	recurseRowM(T, RowNext).
+	recurseRowM(T, RowNext, Dict).
 
-recurseColM([], _, _).
-recurseColM([X|T],Row, Col):-
+recurseColM([], _, _,_):-!.
+recurseColM([X|T],Row, Col,Dict):-
 	(integer(X) ->
 		true
 		;
-		maybe(Row-Col, [1,2,3,4,5,6,7,8,9])
+		filterImposibleMaybes(Row-Col, Dict, Possibles),
+		maybe(Row-Col, Possibles)
 	),
 	Col2 is Col + 1,
-	recurseColM(T, Row, Col2).
+	recurseColM(T, Row, Col2,Dict).
+
+
+
+filterImposibleMaybes(Row-Col, Dict, Possibles):-
+	
+	NaivePossibles = [1,2,3,4,5,6,7,8,9], 
+	findall(
+		Num, (
+			member(Num,NaivePossibles),
+			integrity([Row-Col|Dict.Num])
+		), 
+		Possibles).

@@ -1,5 +1,5 @@
 problems=("verydifficult" "expert" "lambda" "hard17" "symme" "eastermonster" "tarek_052" "goldennugget" "coloin" "extra1" "extra2" "extra3" "extra4" "inkara2012" "clue18" "clue17" "sudowiki_nb28" "sudowiki_nb49" "veryeasy")
-testt=("verydifficult")
+testt=("expert")
 iteration=$1
 
 
@@ -7,7 +7,7 @@ limit=$2
 viewpoint=$3
 rm -rf $viewpoint/log$iteration 
 mkdir $viewpoint/log$iteration
-for i in ${problems[@]}; do
+for i in ${testt[@]}; do
 	output_file=$viewpoint/log$iteration/output_$i.log
 	echo $i
 	echo "begin-- $i" >> $output_file
