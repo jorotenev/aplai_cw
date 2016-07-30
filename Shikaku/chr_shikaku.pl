@@ -30,7 +30,7 @@ absorb_maybe @ maybe(c(X,Y), [(c(TopX,TopY), s(Width,Height))]) <=>
 % the passive pragma [1] here means that no mirror checks will be made because the rule will trigger only when
 % the active constraint matches the fisrt head.
 % [1] https://sicstus.sics.se/sicstus/docs/3.12.7/html/sicstus/CHR-Pragmas.html
-integrity @ rect(c(_, _), c(TopX1, TopY1), s(W1, H1)) , rect(c(_, _), c(TopX2, TopY2), s(W2, H2)) <=>
+integrity @ rect(c(_, _), c(TopX1, TopY1), s(W1, H1)) , rect(c(_, _), c(TopX2, TopY2), s(W2, H2)) # passive <=>
 	\+ doNotOverlap((c(TopX1, TopY1), s(W1, H1)), (c(TopX2, TopY2), s(W2, H2))) |  false. 
 
 /* 
@@ -39,7 +39,7 @@ integrity @ rect(c(_, _), c(TopX1, TopY1), s(W1, H1)) , rect(c(_, _), c(TopX2, T
 	the rule triggers only when we add a new rect. This way, we use the 
 	new knowledge we have (i.e. the rect itself) to prune the obviously wrong maybes.
 */
-active_constraint @ rect(_, TopCoords, TopSize)  \ maybe(MaybeHintCoords, Possibilities) <=>
+active_constraint @ rect(_, TopCoords, TopSize)  \ maybe(MaybeHintCoords, Possibilities) #passive<=>
 	overlaps((TopCoords, TopSize), Possibilities,[], Overlaps),
 	Overlaps \= []
 	|
@@ -54,9 +54,10 @@ every time we add a new rect from the rule, when Applying the rect, the rule wil
 Instead, if we use simplification(the current state), the rule will start only when the 
 created rect rule applications are done.
 */
-search @  can_start \ maybe(c(X,Y), Possibilities) <=> 
+search @  can_start , maybe(c(X,Y), Possibilities) <=> 
 	member((c(TopX, TopY), s(W, H)), Possibilities), 
-	rect(c(X, Y), c(TopX, TopY), s(W, H)).
+	rect(c(X, Y), c(TopX, TopY), s(W, H)),
+	can_start.
 /****
 Utils
 ****/
