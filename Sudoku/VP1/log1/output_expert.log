@@ -1,12 +1,14 @@
 begin-- expert
-Timeout is 100
-% Started at Fri Jul 29 19:01:03 2016
-% 0.805 seconds cpu time for 4,331,491 inferences
-% 8,563 atoms, 5,470 functors, 4,702 predicates, 68 modules, 384,278 VM-codes
+Timeout is 60
+Starting expert
+Input generated
+% Started at Sat Jul 30 12:50:10 2016
+% 0.826 seconds cpu time for 4,331,873 inferences
+% 8,563 atoms, 5,470 functors, 4,702 predicates, 68 modules, 384,298 VM-codes
 % 
 %                        Limit    Allocated       In use
 % Local  stack:    268,435,456      126,976        3,576 Bytes
-% Global stack:    268,435,456    1,044,464      574,976 Bytes
+% Global stack:    268,435,456    1,044,464      575,048 Bytes
 % Trail  stack:    268,435,456      260,088       36,112 Bytes
 % 
 % 6 garbage collections gained 882,112 bytes in 0.003 seconds.

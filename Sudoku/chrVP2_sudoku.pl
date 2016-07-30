@@ -11,7 +11,8 @@
 
 :- chr_constraint 	maybe(+pos, +),
 					bucket(+pos, +),
-					temp(+pos,+int).
+					temp(+pos,+int),
+					can_start/0.
 
 
 /*
@@ -23,36 +24,31 @@ is located at cells 1-1 and 4-3, then bucket(1,[1-1,4-3]).
 
 
 /********
-CHR Rules
+-CHR Rules
 ********/ 
-absorb @ maybe(X-Y, [N]), bucket(N, Vals) <=> bucket(N, [X-Y|Vals]).
+sudoku @ bucket(_, Coords) <=> \+ integrity(Coords) | false.
 
-%% makes sure that the contents of a bucket are always obeying the rules of the game
-sudoku @ bucket(_, Coords) <=> \+integrity(Coords) | false.
+absorb @ maybe(X-Y, [N]) <=> temp(X-Y, N).
 
-%% convert & addToBucket achieve together adding a coordinate to a bucket.
-convert @ temp(X-Y, Num), bucket(Bucket, Coords) # passive  <=> Num =:= Bucket | bucket(Bucket, [X-Y | Coords]).
+convert @ temp(X-Y, Num), bucket(Bucket, Coords) # passive <=> Num =:= Bucket | bucket(Num, [X-Y | Coords]).
 
-
-
-addToBucket @ maybe(X-Y, Vals) <=> member(Num, Vals), temp(X-Y, Num).
+addToBucket @ can_start , maybe(X-Y, Vals)  <=> member(Num, Vals), temp(X-Y, Num), can_start.
 
 
 
 /******
 Helpers
 ******/
-
-
 solve(ProblemName):-
 	write('Starting '), write(ProblemName),nl,
 	puzzles(P, ProblemName),
 	buckets(P),
 	maybes(P), !, 
+	can_start,
 	chr_show_store(chr2_sudoku),
 	statistics.
 
-
+all_diff(L) :- \+ (select(X,L,R), memberchk(X,R)).
 
 	
 
@@ -61,13 +57,14 @@ integrity(List)
 The predicate is true when the coordinates in the List are seen at most once
 in each row, col and block.
 */
-integrity([]).
+integrity([]):-!.
 integrity(Cells) :-
+	all_diff(Cells),
 	genAllRowPositions(Rows),
-	genAllColPositions(Cols), % Block checks will also be added later.
-	genAllBlockPositions(Blocks),
 	intersectionSizeIsValid(Cells, Rows),
+	genAllColPositions(Cols), % Block checks will also be added later.
 	intersectionSizeIsValid(Cells, Cols),
+	genAllBlockPositions(Blocks),
 	intersectionSizeIsValid(Cells, Blocks).
 	
 
@@ -108,11 +105,11 @@ e.g. for row: [[1-1,1-2,1-3, ...], [2-1,2-2,2-3, ...], ...]
 e.g. for col: [[1-1,2-1,1-3, ...], [1-2,2-2,3-2, ...], ...]
 e.g. for block [[1-1, 1-2, 1-3, 2-1, 2-2, 2-3, 3-1, 3-2, 3-3], ...]
 */
-genAllRowPositions(Result) :-  genAllPositions_([1,2,3,4,5,6,7,8,9], row, [], Result).
-genAllColPositions(Result) :-  genAllPositions_([1,2,3,4,5,6,7,8,9], col, [], Result).
-genAllBlockPositions(Result) :- genAllPositions_([1,2,3,4,5,6,7,8,9], block, [], Result).
+genAllRowPositions(Result) :-  genAllPositions_([1,2,3,4,5,6,7,8,9], row, [], Result),!.
+genAllColPositions(Result) :-  genAllPositions_([1,2,3,4,5,6,7,8,9], col, [], Result),!.
+genAllBlockPositions(Result) :- genAllPositions_([1,2,3,4,5,6,7,8,9], block, [], Result),!.
 
-genAllPositions_([],_,R,R).
+genAllPositions_([],_,R,R):-!.
 genAllPositions_([Row|Rest], Predicate, Res, Temp) :- 
 	call(Predicate, Row, CurrentRow),
 	genAllPositions_(Rest, Predicate, [CurrentRow|Res], Temp).

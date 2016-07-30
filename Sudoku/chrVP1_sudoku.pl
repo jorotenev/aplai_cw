@@ -43,9 +43,11 @@ sees(X1-Y1, A1-B1) :-
 %%%%%%%%%%%
 
 solve(ProblemName) :- 
+	write("Starting "),write(ProblemName),nl,
 	puzzles(P,ProblemName), 
 	givens(P),
 	maybes(P), !,
+	write("Input generated"),nl,
 	can_start,
 	statistics,	 
 	chr_show_store(chr_sudoku).

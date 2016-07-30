@@ -1,3 +1,5 @@
 begin-- extra2
-Timeout is 100
+Timeout is 60
+Starting extra2
+Input generated
 end-- extra2

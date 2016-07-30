@@ -1,15 +1,17 @@
 begin-- symme
-Timeout is 100
-% Started at Fri Jul 29 19:02:55 2016
-% 3.596 seconds cpu time for 22,322,278 inferences
-% 8,563 atoms, 5,470 functors, 4,702 predicates, 68 modules, 384,278 VM-codes
+Timeout is 60
+Starting symme
+Input generated
+% Started at Sat Jul 30 12:51:22 2016
+% 3.831 seconds cpu time for 22,322,660 inferences
+% 8,563 atoms, 5,470 functors, 4,702 predicates, 68 modules, 384,298 VM-codes
 % 
 %                        Limit    Allocated       In use
 % Local  stack:    268,435,456      126,976        1,976 Bytes
-% Global stack:    268,435,456    1,044,464      576,672 Bytes
+% Global stack:    268,435,456    1,044,464      576,744 Bytes
 % Trail  stack:    268,435,456      260,088       38,568 Bytes
 % 
-% 6 garbage collections gained 882,112 bytes in 0.004 seconds.
+% 6 garbage collections gained 882,112 bytes in 0.003 seconds.
 % Stack shifts: 2 local, 4 global, 3 trail in 0.000 seconds
 % 1 threads, 0 finished threads used 0.000 seconds
 given(3-8,1)

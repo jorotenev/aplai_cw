@@ -1,8 +1,8 @@
 problems=("verydifficult" "expert" "lambda" "hard17" "symme" "eastermonster" "tarek_052" "goldennugget" "coloin" "extra1" "extra2" "extra3" "extra4" "inkara2012" "clue18" "clue17" "sudowiki_nb28" "sudowiki_nb49" "veryeasy")
-testt=("verydifficult" "expert")
+testt=("verydifficult")
 iteration=$1
 
-pwd
+
 limit=$2
 viewpoint=$3
 rm -rf $viewpoint/log$iteration 

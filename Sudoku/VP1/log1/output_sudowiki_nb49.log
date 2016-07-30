@@ -1,12 +1,14 @@
 begin-- sudowiki_nb49
-Timeout is 100
-% Started at Fri Jul 29 19:13:05 2016
-% 6.784 seconds cpu time for 43,773,727 inferences
-% 8,563 atoms, 5,470 functors, 4,702 predicates, 68 modules, 384,278 VM-codes
+Timeout is 60
+Starting sudowiki_nb49
+Input generated
+% Started at Sat Jul 30 12:58:01 2016
+% 7.197 seconds cpu time for 43,774,109 inferences
+% 8,563 atoms, 5,470 functors, 4,702 predicates, 68 modules, 384,298 VM-codes
 % 
 %                        Limit    Allocated       In use
 % Local  stack:    268,435,456      126,976        3,576 Bytes
-% Global stack:    268,435,456    1,044,464      575,544 Bytes
+% Global stack:    268,435,456    1,044,464      575,616 Bytes
 % Trail  stack:    268,435,456      260,088       39,536 Bytes
 % 
 % 6 garbage collections gained 882,112 bytes in 0.003 seconds.

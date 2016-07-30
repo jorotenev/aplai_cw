@@ -1,15 +1,17 @@
 begin-- verydifficult
-Timeout is 100
-% Started at Fri Jul 29 19:01:02 2016
-% 0.762 seconds cpu time for 3,677,246 inferences
-% 8,563 atoms, 5,470 functors, 4,702 predicates, 68 modules, 384,278 VM-codes
+Timeout is 60
+Starting verydifficult
+Input generated
+% Started at Sat Jul 30 12:50:09 2016
+% 0.729 seconds cpu time for 3,677,628 inferences
+% 8,563 atoms, 5,470 functors, 4,702 predicates, 68 modules, 384,298 VM-codes
 % 
 %                        Limit    Allocated       In use
 % Local  stack:    268,435,456      126,976        1,656 Bytes
-% Global stack:    268,435,456    1,044,464      565,656 Bytes
+% Global stack:    268,435,456    1,044,464      565,728 Bytes
 % Trail  stack:    268,435,456      260,088       30,856 Bytes
 % 
-% 6 garbage collections gained 882,112 bytes in 0.004 seconds.
+% 6 garbage collections gained 882,112 bytes in 0.003 seconds.
 % Stack shifts: 2 local, 4 global, 3 trail in 0.000 seconds
 % 1 threads, 0 finished threads used 0.000 seconds
 given(8-3,4)

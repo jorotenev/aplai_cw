@@ -1,12 +1,14 @@
 begin-- coloin
-Timeout is 100
-% Started at Fri Jul 29 19:03:16 2016
-% 5.879 seconds cpu time for 36,802,531 inferences
-% 8,563 atoms, 5,470 functors, 4,702 predicates, 68 modules, 384,278 VM-codes
+Timeout is 60
+Starting coloin
+Input generated
+% Started at Sat Jul 30 12:51:43 2016
+% 6.057 seconds cpu time for 36,802,913 inferences
+% 8,563 atoms, 5,470 functors, 4,702 predicates, 68 modules, 384,298 VM-codes
 % 
 %                        Limit    Allocated       In use
 % Local  stack:    268,435,456      126,976        4,216 Bytes
-% Global stack:    268,435,456    1,044,464      575,912 Bytes
+% Global stack:    268,435,456    1,044,464      575,984 Bytes
 % Trail  stack:    268,435,456      260,088       39,976 Bytes
 % 
 % 6 garbage collections gained 882,112 bytes in 0.003 seconds.

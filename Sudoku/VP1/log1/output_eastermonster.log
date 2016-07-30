@@ -1,12 +1,14 @@
 begin-- eastermonster
-Timeout is 100
-% Started at Fri Jul 29 19:02:58 2016
-% 2.934 seconds cpu time for 16,943,872 inferences
-% 8,563 atoms, 5,470 functors, 4,702 predicates, 68 modules, 384,278 VM-codes
+Timeout is 60
+Starting eastermonster
+Input generated
+% Started at Sat Jul 30 12:51:26 2016
+% 2.853 seconds cpu time for 16,944,254 inferences
+% 8,563 atoms, 5,470 functors, 4,702 predicates, 68 modules, 384,298 VM-codes
 % 
 %                        Limit    Allocated       In use
 % Local  stack:    268,435,456      126,976        2,936 Bytes
-% Global stack:    268,435,456    1,044,464      576,368 Bytes
+% Global stack:    268,435,456    1,044,464      576,440 Bytes
 % Trail  stack:    268,435,456      260,088       38,816 Bytes
 % 
 % 6 garbage collections gained 882,112 bytes in 0.004 seconds.

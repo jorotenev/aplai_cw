@@ -1,3 +1,5 @@
 begin-- lambda
-Timeout is 100
+Timeout is 60
+Starting lambda
+Input generated
 end-- lambda

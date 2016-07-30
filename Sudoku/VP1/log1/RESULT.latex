@@ -1,0 +1,28 @@
+\begin{table}
+\caption{Iteration VP11. Time is in seconds. Maximum run-time limit is 60 }
+\label{tab:VP11}
+\begin{tabular}{ll}
+\toprule
+ Name          & Search Time   \\
+\midrule
+ clue17        & FAIL          \\
+ clue18        & 3.888         \\
+ coloin        & 6.057         \\
+ eastermonster & 2.853         \\
+ expert        & 0.826         \\
+ extra1        & FAIL          \\
+ extra2        & FAIL          \\
+ extra3        & FAIL          \\
+ extra4        & FAIL          \\
+ goldennugget  & 12.097        \\
+ hard17        & 11.341        \\
+ inkara2012    & 8.363         \\
+ lambda        & FAIL          \\
+ sudowiki\_nb28 & FAIL          \\
+ sudowiki\_nb49 & 7.197         \\
+ symme         & 3.831         \\
+ tarek\_052     & 2.030         \\
+ verydifficult & 0.729         \\
+ veryeasy      & FAIL          \\
+\bottomrule
+\end{tabular}\end{table}
