@@ -13,17 +13,9 @@
 :- chr_type val == int.
 
 
-absorb @ maybe(P, [V]) <=>  given(P, V).
-
-integrity @ given(P1,V) \ maybe(P2, L) <=> sees(P1,P2), select(V, L, L2) | maybe(P2,L2).
-
-trivial @ given(P1,V1), given(P2,V2) # passive <=> V1=:=V2, sees(P1, P2) | fail.
-
-search @ can_start,maybe(P,L) # passive  <=> 
-	member(V,L), 
-	given(P,V),
-	can_start
-	. 
+maybe(P, [V]) <=>  given(P, V).
+given(P1,V) \ maybe(P2,L) <=> sees(P1,P2), select(V,L,L2) | maybe(P2,L2).
+maybe(P,L) <=> member(V,L), given(P,V). % failure in the body triggers Prolog choicepoints
 
 /*
 Utils
