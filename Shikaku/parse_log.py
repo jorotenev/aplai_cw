@@ -45,7 +45,7 @@ def getSearchStatistics(content, genSecs):
 		seconds,inferences = re.match(p, line).groups()
 		assert seconds and inferences
 		seconds = Decimal(seconds)
-		genSecs =Decimal(genSecs)
+		genSecs = Decimal(genSecs)
 		seconds = seconds - genSecs
 
 		return seconds, inferences
@@ -73,7 +73,7 @@ def runBaby(files, logDir):
 		# print(searchSecs,searchInf)
 		lines.append([problemName, genSecs, searchSecs])
 
-
+	lines.sort()
 	headers = ['Name', 'Problem generation time', 'Search Time']
 	table =  tabulate(lines, headers=headers, tablefmt='latex_booktabs')
 	iteration = logDir.replace('log', "").replace('/','')
