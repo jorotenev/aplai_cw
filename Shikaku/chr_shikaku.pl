@@ -19,35 +19,33 @@
 CHR Rules
 **/
 
-/** APPEARRS IN ITERATION 2
-empty @ maybe(_, []) ==>  false.
-*/
-/*APPEARRS IN ITERATION 2
+
+%% empty @ maybe(_, []) ==>  false.
+
 absorb_maybe @ maybe(c(X,Y), [(c(TopX,TopY), s(Width,Height))]) <=>  
 	rect(c(X,Y), c(TopX, TopY), s(Width,Height)).
-*/
+
 % if the rects overlap, then fail. This will backtrack to the last member/2 in the search rule. 
 % Note that if member/2 has Possibilities left, the passive rect will *exist* in that new branch of member/2.
 % the passive pragma [1] here means that no mirror checks will be made because the rule will trigger only when
 % the active constraint matches the fisrt head.
-
 % [1] https://sicstus.sics.se/sicstus/docs/3.12.7/html/sicstus/CHR-Pragmas.html
 integrity @ rect(c(_, _), c(TopX1, TopY1), s(W1, H1)) , rect(c(_, _), c(TopX2, TopY2), s(W2, H2)) <=>
 	\+ doNotOverlap((c(TopX1, TopY1), s(W1, H1)), (c(TopX2, TopY2), s(W2, H2))) |  false. 
 
-/* APPEARRS IN ITERATION 2
+/* 
 	it's ok for the maybe constraint to be passive. 
 	even if we are in the pre_"can_start" phase, 
 	the rule triggers only when we add a new rect. This way, we use the 
 	new knowledge we have (i.e. the rect itself) to prune the obviously wrong maybes.
-
-	active_constraint @ rect(_, TopCoords, TopSize)  \ maybe(MaybeHintCoords, Possibilities)  # passive <=>
-		overlaps((TopCoords, TopSize), Possibilities,[], Overlaps),
-		Overlaps \= []
-		|
-		subtract(Possibilities, Overlaps, NonConflictingMaybe),
-		maybe(MaybeHintCoords, NonConflictingMaybe).
 */
+%% active_constraint @ rect(_, TopCoords, TopSize)  \ maybe(MaybeHintCoords, Possibilities) <=>
+%% 	overlaps((TopCoords, TopSize), Possibilities,[], Overlaps),
+%% 	Overlaps \= []
+%% 	|
+%% 	subtract(Possibilities, Overlaps, NonConflictingMaybe),
+%% 	maybe(MaybeHintCoords, NonConflictingMaybe).
+
 
 /* 
 the biggest inefficiency is using simpagation here.
@@ -56,7 +54,7 @@ every time we add a new rect from the rule, when Applying the rect, the rule wil
 Instead, if we use simplification(the current state), the rule will start only when the 
 created rect rule applications are done.
 */
-search @  maybe(c(X,Y), Possibilities) <=> 
+search @  can_start \ maybe(c(X,Y), Possibilities) <=> 
 	member((c(TopX, TopY), s(W, H)), Possibilities), 
 	rect(c(X, Y), c(TopX, TopY), s(W, H)).
 /****
