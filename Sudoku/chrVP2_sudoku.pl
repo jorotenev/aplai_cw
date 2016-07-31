@@ -4,16 +4,17 @@
 :- use_module(library(chr)).
 :- use_module(library(lists)).
 %% :- chr_option(optimize,full).
+:- chr_option(optimize,full).
 
 :- chr_type pos ---> row-col.
 :- chr_type row == int.
 :- chr_type col == int.
-
-:- chr_constraint 	maybe(+pos, +),
-					bucket(+int, +),
+:- chr_type list(T) ---> [] ; [T|list(T)].
+:- chr_constraint 	maybe(+pos, +list(pos)),
+					bucket(+int, +list(pos)),
 					temp(+pos,+int),
-					can_start/0.
-
+					can_start/0,
+					readyBuckets(+list(int)).
 
 /*
 http://gecoder.org/examples/sudoku-set.html
@@ -21,20 +22,25 @@ Create one set (bucket) per assignable number (i.e. 1..9). Each bucket contains 
 positions of all squares that the number is located in. I.e. if the number 1
 is located at cells 1-1 and 4-3, then bucket(1,[1-1,4-3]).
 */
-
 /*
 todo
 if bucket is full it has all numbers
 */
-
 /********
 CHR Rules
 ********/ 
-sudoku @ bucket(_, Coords) <=>  \+ integrity(Coords) | false.
+%% boo @ maybe(_, []) ==> false.
 
-absorb @ maybe(X-Y, [N]) <=> temp(X-Y, N).
 
-convert @ temp(X-Y, Num), bucket(Bucket, Coords) # passive  <=> Num =:= Bucket | bucket(Num, [X-Y | Coords]).
+foo @ bucket(N, Coords) \ maybe(X-Y, Possibles) # passive <=> memberchk(N, Possibles), \+ integrity([X-Y | Coords]) | delete(Possibles, N,NewPosib), maybe(X-Y, NewPosib).
+
+boo @ bucket(N,Coords) # passive \ temp(X-Y, N) <=> \+ integrity([X-Y|Coords]) | false.
+
+sudoku @ bucket(_, Coords)  <=> \+ integrity(Coords) | false.
+
+absorb @ maybe(X-Y, [N]) <=> temp(X-Y,N).
+
+convert @ temp(X-Y, Num), bucket(Num, Coords) # passive  <=>   bucket(Num, [X-Y | Coords]).
 
 % MUST be after the "convert" rule.
 tempb4bucket @ temp(X-Y,Num) <=> bucket(Num, [X-Y]).
@@ -47,7 +53,7 @@ addToBucket @ can_start, maybe(X-Y, Vals) # passive <=> member(Num, Vals), temp(
 Helpers
 ******/
 solve(ProblemName):-
-	write('Starting '), write(ProblemName),nl,
+	write('Starting '), write(ProblemName), nl,
 	puzzles(P, ProblemName),
 	buckets(P, Dict),
 	maybes(P, Dict), !, 
@@ -57,22 +63,21 @@ solve(ProblemName):-
 
 all_diff(L) :- \+ (select(X,L,R), memberchk(X,R)).
 
-	
-
 /*
 integrity(List)
 The predicate is true when the coordinates in the List are seen at most once
 in each row, col and block.
-*/
+%% */
 integrity([]):-!.
+integrity([_]):-!.
 integrity(Cells) :-
 	all_diff(Cells),
 	readyRows(Rows),
-	intersectionSizeIsValid(Cells, Rows),
+	intersectionSizeIsValid(Cells, Rows),!,
 	readyCols(Cols), 
-	intersectionSizeIsValid(Cells, Cols),
+	intersectionSizeIsValid(Cells, Cols),!,
 	readyBlocks(Blocks),
-	intersectionSizeIsValid(Cells, Blocks).
+	intersectionSizeIsValid(Cells, Blocks),!.
 	
 
 
@@ -83,27 +88,10 @@ the intersection of the sub-list with @List is less-or-equal to 1.
 */
 intersectionSizeIsValid(_, []):-!.
 intersectionSizeIsValid(Cells, [CurrList| Rest]):-
-	intersectionSize(Cells, CurrList, IntrSize),
+	intersection(Cells, CurrList, Intersection),!,
+	length(Intersection, IntrSize),
 	IntrSize =< 1,
 	intersectionSizeIsValid(Cells, Rest).
-
-
-/*
-intersectionSize(List1, List2, IntersectionSize).
-The predicate is true when the intersection(number of common elements)
-between @List1 and @List2 is equal to IntersectionSize
-
-@List2 *must* be non empty
-*/
-intersectionSize([],_,0):-!.
-intersectionSize([H|T], L, NewSize):-
-	intersectionSize(T, L, Res),
-	(
-		member(H, L) ->
-			NewSize is Res + 1
-		;
-			NewSize is Res
-	).
 
 
 /*
@@ -221,8 +209,23 @@ buckets(P, FullBuckets) :-
 	recurseRow(P,1, EmptyBuckets, FullBuckets), 
 	fromDictToChrRules(FullBuckets).
 	
-maybes(P,Dict) :-  recurseRowM(P,1,Dict).
+maybes(P,Dict) :-  	
+	recurseRowM(P,1,Dict,[], Mullas),
+	flatten(Mullas,Flatten),
+	sortedOnLength(Flatten,Sorted),
+	fromListToRule(Flatten).
 
+fromListToRule([]).
+fromListToRule([(Row-Col,Possibles)|Rest]):-
+	maybe(Row-Col,Possibles),
+	fromListToRule(Rest)
+	.
+
+sortedOnLength(Unsrt, Srtd):-
+	write(Unsrt),nl,nl,nl,
+	predsort(criteria, Unsrt, Srtd),
+	write(Srtd),nl,nl,nl
+	.
 
 
 /*******
@@ -260,22 +263,23 @@ createRules([X-Coords|Rest], ChrConstraint):-
 /*****
 Maybes
 *****/
-recurseRowM([],_,_):-!.
-recurseRowM([X|T], Row,Dict):-
-	recurseColM(X, Row, 1,Dict),
+recurseRowM([],_,_,R,R):-!.
+recurseRowM([X|T], Row,Dict, R, Temp):-
+	recurseColM(X, Row, 1,Dict,[], Res),
 	RowNext is Row + 1,
-	recurseRowM(T, RowNext, Dict).
+	recurseRowM(T, RowNext, Dict, [Res|R], Temp).
 
-recurseColM([], _, _,_):-!.
-recurseColM([X|T],Row, Col,Dict):-
+recurseColM([], _, _,_, R,R):-!.
+recurseColM([X|T],Row, Col,Dict, R, Temp):-
 	(integer(X) ->
-		true
+		true,
+		Add = R
 		;
 		filterImposibleMaybes(Row-Col, Dict, Possibles),
-		maybe(Row-Col, Possibles)
+		Add = [(Row-Col,Possibles)|R]
 	),
 	Col2 is Col + 1,
-	recurseColM(T, Row, Col2,Dict).
+	recurseColM(T, Row, Col2,Dict, Add, Temp).
 
 
 
@@ -288,3 +292,7 @@ filterImposibleMaybes(Row-Col, Dict, Possibles):-
 			integrity([Row-Col|Dict.Num])
 		), 
 		Possibles).
+
+criteria(R, (_-_,L1),(_-_,L2)) :- length(L1,Len1),length(L2,Len2), Len2 =\=Len1, compare(R, Len2, Len1).
+criteria(R,E1,E2) :- compare(R,E1,E2).
+%% criteria(R,[_,_,N1],[_,_,N2]) :- N1=\=N2, !, compare(R,N2,N1).

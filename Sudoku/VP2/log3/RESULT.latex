@@ -1,0 +1,28 @@
+\begin{table}
+\caption{Iteration VP23. Time is in seconds. Maximum run-time limit is 60 }
+\label{tab:VP23}
+\begin{tabular}{ll}
+\toprule
+ Name          & Search Time   \\
+\midrule
+ clue17        & TIMED-OUT     \\
+ clue18        & TIMED-OUT     \\
+ coloin        & TIMED-OUT     \\
+ eastermonster & TIMED-OUT     \\
+ expert        & 2.554         \\
+ extra1        & TIMED-OUT     \\
+ extra2        & TIMED-OUT     \\
+ extra3        & TIMED-OUT     \\
+ extra4        & TIMED-OUT     \\
+ goldennugget  & TIMED-OUT     \\
+ hard17        & TIMED-OUT     \\
+ inkara2012    & 33.507        \\
+ lambda        & TIMED-OUT     \\
+ sudowiki\_nb28 & TIMED-OUT     \\
+ sudowiki\_nb49 & TIMED-OUT     \\
+ symme         & TIMED-OUT     \\
+ tarek\_052     & 52.114        \\
+ verydifficult & 1.065         \\
+ veryeasy      & 1.008         \\
+\bottomrule
+\end{tabular}\end{table}

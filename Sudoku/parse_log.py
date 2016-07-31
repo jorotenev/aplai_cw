@@ -51,7 +51,7 @@ def getSearchStatistics(content, genSecs):
 
 		print(ex)
 		
-		return "FAIL", "FAIL"
+		return "TIMED-OUT", "TIMED-OUT"
 
 def runBaby(files, logDir):
 	files.sort()
@@ -84,9 +84,9 @@ def runBaby(files, logDir):
 
 
 def boo(x,y):
-	if x[1] == 'FAIL':
+	if x[1] == 'TIMED-OUT':
 		x[1] = -1
-	if y[1] == 'FAIL':
+	if y[1] == 'TIMED-OUT':
 		y[1] = -1
 	return x[1] - y[1]
 if __name__ == '__main__':

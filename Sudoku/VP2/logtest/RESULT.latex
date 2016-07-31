@@ -1,0 +1,10 @@
+\begin{table}
+\caption{Iteration VP2test. Time is in seconds. Maximum run-time limit is 10 }
+\label{tab:VP2test}
+\begin{tabular}{lr}
+\toprule
+ Name   &   Search Time \\
+\midrule
+ expert &         1.933 \\
+\bottomrule
+\end{tabular}\end{table}

@@ -1,0 +1,26 @@
+begin-- expert
+Timeout is 60
+Starting expert
+bucket(4,[1-5,2-8,4-9,5-2,7-3,8-4,9-7,6-6,3-1])
+bucket(2,[1-3,3-8,4-2,5-6,6-9,8-7,9-4,7-1,2-5])
+bucket(7,[1-2,3-4,4-8,6-5,7-7,8-3,9-6,5-1,2-9])
+bucket(6,[1-1,3-7,4-4,5-3,7-5,9-2,8-9,6-8,2-6])
+bucket(8,[2-4,3-2,7-8,8-1,9-5,6-3,5-9,4-6,1-7])
+bucket(3,[1-8,4-3,5-7,8-5,9-9,7-2,6-4,3-6,2-1])
+bucket(9,[1-6,2-2,3-9,4-7,9-3,8-8,7-4,6-1,5-5])
+bucket(1,[1-4,2-7,3-3,4-5,5-8,6-2,7-9,8-6,9-1])
+bucket(5,[2-3,3-5,4-1,5-4,6-7,7-6,8-2,9-8,1-9])
+can_start
+% Started at Sun Jul 31 19:18:38 2016
+% 2.554 seconds cpu time for 9,390,428 inferences
+% 12,384 atoms, 6,215 functors, 5,305 predicates, 103 modules, 452,930 VM-codes
+% 
+%                        Limit    Allocated       In use
+% Local  stack:    268,435,456      126,976        1,344 Bytes
+% Global stack:    268,435,456    1,044,464      571,232 Bytes
+% Trail  stack:    268,435,456      260,088       21,744 Bytes
+% 
+% 6 garbage collections gained 882,112 bytes in 0.005 seconds.
+% Stack shifts: 2 local, 4 global, 3 trail in 0.000 seconds
+% 2 threads, 0 finished threads used 0.000 seconds
+end-- expert
