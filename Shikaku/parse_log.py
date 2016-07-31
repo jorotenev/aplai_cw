@@ -5,7 +5,7 @@ from decimal import Decimal
 
 file_prefix = 'output_'
 logDir = sys.argv[1] + '/'
-
+hasGenerationStage = if len(sys.argv == 2 ) True else False
 timeoutPattern = re.compile("^Timeout is (\d+)$",re.MULTILINE)
 generationPattern = re.compile('^% (\S+) inferences, .+ in (\S+) seconds')
 searchPattern = re.compile("^% (\d+\.\d+|\d+) seconds cpu time for (\S+) inferences")
@@ -49,7 +49,8 @@ def getSearchStatistics(content, genSecs):
 		assert seconds and inferences
 		seconds = Decimal(seconds)
 		genSecs = Decimal(genSecs)
-		seconds = seconds - genSecs
+		if hasGenerationStage:
+			seconds = seconds - genSecs
 
 		return seconds, inferences
 
@@ -75,10 +76,15 @@ def runBaby(files, logDir):
 
 		searchSecs,searchInf = getSearchStatistics(logContent,genSecs)
 		# print(searchSecs,searchInf)
-		lines.append([problemName, genSecs, searchSecs])
+		lines.append([problemName, searchSecs])
+		if hasGenerationStage:
+			lines.append(genSecs)
 
 	lines.sort()
-	headers = ['Name', 'Problem generation time', 'Search Time']
+	if hasGenerationStage:
+		headers = ['Name', 'Search Time', 'Problem generation time']
+	else:
+		del headers[2]
 	table =  tabulate(lines, headers=headers, tablefmt='latex_booktabs')
 	iteration = logDir.replace('log', "").replace('/','')
 	caption ='\caption{%s}' % 'Iteration %s. Time is in seconds. Maximum run-time limit is %s '%(iteration, timeout)+'\n'
