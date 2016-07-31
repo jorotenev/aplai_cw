@@ -5,7 +5,7 @@ from decimal import Decimal
 
 file_prefix = 'output_'
 logDir = sys.argv[1] + '/'
-hasGenerationStage = if len(sys.argv == 2 ) True else False
+hasGenerationStage = True if len(sys.argv) == 2 else False
 timeoutPattern = re.compile("^Timeout is (\d+)$",re.MULTILINE)
 generationPattern = re.compile('^% (\S+) inferences, .+ in (\S+) seconds')
 searchPattern = re.compile("^% (\d+\.\d+|\d+) seconds cpu time for (\S+) inferences")
@@ -84,7 +84,7 @@ def runBaby(files, logDir):
 	if hasGenerationStage:
 		headers = ['Name', 'Search Time', 'Problem generation time']
 	else:
-		del headers[2]
+		headers = ['Name', 'Problem generation + Search Time']
 	table =  tabulate(lines, headers=headers, tablefmt='latex_booktabs')
 	iteration = logDir.replace('log', "").replace('/','')
 	caption ='\caption{%s}' % 'Iteration %s. Time is in seconds. Maximum run-time limit is %s '%(iteration, timeout)+'\n'
