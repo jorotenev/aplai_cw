@@ -7,7 +7,7 @@ limit=$2
 viewpoint=$3
 rm -rf $viewpoint/log$iteration 
 mkdir $viewpoint/log$iteration
-for i in ${testt[@]}; do
+for i in ${problems[@]}; do
 	output_file=$viewpoint/log$iteration/output_$i.log
 	echo $i
 	echo "begin-- $i" >> $output_file
