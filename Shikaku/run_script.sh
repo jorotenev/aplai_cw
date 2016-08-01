@@ -5,7 +5,7 @@ iteration=$1
 rm -rf log/log$iteration 
 mkdir log/log$iteration
 limit=$2
-for i in ${problems[@]}; do
+for i in ${testt[@]}; do
 	output_file=log/log$iteration/output_$i.log
 	echo $i
 	echo "begin-- $i" >> $output_file
@@ -13,3 +13,5 @@ for i in ${problems[@]}; do
 	timeout --foreground -k 3 $limit swipl -q -s chr_shikaku.pl -t "solve($i)." &>> $output_file
 	echo "end-- $i" >> $output_file
 done
+
+python parse_log.py log/log$iteration True

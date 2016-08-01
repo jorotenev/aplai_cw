@@ -1,0 +1,6 @@
+begin-- lambda
+Timeout is 60
+Warning: /home/georgi/Projects/aplai/Sudoku/chrVP2_sudoku.pl:203:
+	Singleton variables: [Sorted]
+Starting lambda
+end-- lambda

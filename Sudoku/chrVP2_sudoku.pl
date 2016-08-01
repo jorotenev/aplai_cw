@@ -1,20 +1,24 @@
-% load the puzzles
 :- [sudoku_problems].
 
 :- use_module(library(chr)).
 :- use_module(library(lists)).
-%% :- chr_option(optimize,full).
 :- chr_option(optimize,full).
 
 :- chr_type pos ---> row-col.
 :- chr_type row == int.
 :- chr_type col == int.
 :- chr_type list(T) ---> [] ; [T|list(T)].
-:- chr_constraint 	maybe(+pos, +list(pos)),
+:- chr_constraint 	% the maybe/2 constraint keeps the possible numbers which can occupy a given position on the grid
+					maybe(+pos, +list(pos)), 
+				    % bucket/2: the int is a number that can occupy a cell. the list holds the coordinates on which the number occurs
 					bucket(+int, +list(pos)),
-					temp(+pos,+int),
-					can_start/0,
-					readyBuckets(+list(int)).
+					% temp/2 is used when a number from a maybe was picked, just before it is added to a bucket.
+					temp(+pos,+int), 
+					% added only after all the buckets and maybes are added to the store, so that the search can commence
+					can_start/0.
+					
+
+
 
 /*
 http://gecoder.org/examples/sudoku-set.html
@@ -22,46 +26,59 @@ Create one set (bucket) per assignable number (i.e. 1..9). Each bucket contains 
 positions of all squares that the number is located in. I.e. if the number 1
 is located at cells 1-1 and 4-3, then bucket(1,[1-1,4-3]).
 */
+
 /*
-todo
-if bucket is full it has all numbers
+ solve/1 is the top level predicate, which should be used to solve puzzless.
 */
 /********
 CHR Rules
 ********/ 
-%% boo @ maybe(_, []) ==> false.
 
-
-foo @ bucket(N, Coords) \ maybe(X-Y, Possibles) # passive <=> memberchk(N, Possibles), \+ integrity([X-Y | Coords]) | delete(Possibles, N,NewPosib), maybe(X-Y, NewPosib).
-
-boo @ bucket(N,Coords) # passive \ temp(X-Y, N) <=> \+ integrity([X-Y|Coords]) | false.
-
-sudoku @ bucket(_, Coords)  <=> \+ integrity(Coords) | false.
-
+% if there's a maybe constraint with just one possible number - then prepare the number to be added to a bucket.
 absorb @ maybe(X-Y, [N]) <=> temp(X-Y,N).
 
-convert @ temp(X-Y, Num), bucket(Num, Coords) # passive  <=>   bucket(Num, [X-Y | Coords]).
+% check if merging the temp with the bucket will make the bucket not correct as per the game rules
+correct @ bucket(N,Coords) # passive \ temp(X-Y, N) <=> \+ integrity([X-Y|Coords]) | false.
 
-% MUST be after the "convert" rule.
-tempb4bucket @ temp(X-Y,Num) <=> bucket(Num, [X-Y]).
+% if the temp constraint hasn't been removed/no backtrack has occurred  in the previous 
+% rules, then merge the temp with the bucket. Note that for efficiency, the Num variable
+% is used in both heads. equivalently an equality check could have been made in the guard.
+convert @ temp(X-Y, Num), bucket(Num, Coords) # passive <=> bucket(Num, [X-Y | Coords]).
 
-addToBucket @ can_start, maybe(X-Y, Vals) # passive <=> member(Num, Vals), temp(X-Y, Num),can_start.
+% when we add a new bucket constrain, check the maybes. if a number from the list of "possible" values in a maybe constraint
+% will make a bucket "wrong", then remove this value from the maybe constraint straight away, instead of waiting for the "search" rule to select the number
+% and find it false later.
+active @ bucket(N, Coords) \ maybe(X-Y, Possibles) # passive <=> memberchk(N, Possibles), \+ integrity([X-Y | Coords]) | delete(Possibles, N,NewPosib), maybe(X-Y, NewPosib).
+
+
+% due to can_start, this rule will trigger only when all maybes were added to the constraint store.
+% the body of the rule relies heavily on the backtracking behaviour of member/2.
+search @ can_start, maybe(X-Y, Vals) # passive <=> member(Num, Vals), temp(X-Y, Num),can_start.
 
 
 
 /******
 Helpers
 ******/
+/*
+solve(+) is the top level predicate, which should be used to solve puzzless.
+ProblemName should be one of the problems defined in sudoku_problems.pl
+*/
 solve(ProblemName):-
 	write('Starting '), write(ProblemName), nl,
-	puzzles(P, ProblemName),
+	puzzles(P, ProblemName), % get the puzzle
+ 	% generate the bucket constraints, based on the already populated hints of the puzzle
 	buckets(P, Dict),
+	% same for maybes, but via the empty cells of the puzzle
 	maybes(P, Dict), !, 
+	% the search rule will now trigger.
 	can_start,
+	% show the constraints of the store after the search has completed.
+	% it will containt 9 buckets, with the correct coordinates in them
 	chr_show_store(chr2_sudoku),
 	statistics.
 
-all_diff(L) :- \+ (select(X,L,R), memberchk(X,R)).
+
 
 /*
 integrity(List)
@@ -146,7 +163,7 @@ fromNumberToCoordinates(Num, RowResult, ColResult) :-
 
 
 % this is the output of using genAll[Row,Col,Block]Positions/1
-% we use the predicates below for efficiency reasons.
+% the predicates below are now used for efficiency reasons.
 readyRows(Rows):- Rows=
 	[
 		[9-1,9-2,9-3,9-4,9-5,9-6,9-7,9-8,9-9],
@@ -222,9 +239,7 @@ fromListToRule([(Row-Col,Possibles)|Rest]):-
 	.
 
 sortedOnLength(Unsrt, Srtd):-
-	write(Unsrt),nl,nl,nl,
-	predsort(criteria, Unsrt, Srtd),
-	write(Srtd),nl,nl,nl
+	predsort(criteria, Unsrt, Srtd)
 	.
 
 
@@ -284,7 +299,6 @@ recurseColM([X|T],Row, Col,Dict, R, Temp):-
 
 
 filterImposibleMaybes(Row-Col, Dict, Possibles):-
-	
 	NaivePossibles = [1,2,3,4,5,6,7,8,9], 
 	findall(
 		Num, (
@@ -293,6 +307,10 @@ filterImposibleMaybes(Row-Col, Dict, Possibles):-
 		), 
 		Possibles).
 
+% criteria/3 is used to do predsort. it will sort a list of tuples, where the second element
+% in the tuple is a list. The ordering is determined by the length of the list.
+% currenly it is in ascending order, so that after adding all the maybe constraints,
+% the constraints with the shorted lists, will be called first.
 criteria(R, (_-_,L1),(_-_,L2)) :- length(L1,Len1),length(L2,Len2), Len2 =\=Len1, compare(R, Len2, Len1).
 criteria(R,E1,E2) :- compare(R,E1,E2).
-%% criteria(R,[_,_,N1],[_,_,N2]) :- N1=\=N2, !, compare(R,N2,N1).
+all_diff(L) :- \+ (select(X,L,R), memberchk(X,R)).

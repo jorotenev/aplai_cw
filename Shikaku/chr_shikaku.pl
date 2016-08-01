@@ -1,5 +1,5 @@
 :- use_module(library(chr)).
-%% :- chr_option(optimize, full).
+:- chr_option(optimize, full).
 %% :- use_module(library(lists)).
 
 %% :- ensure_loaded(shikakuprint).
@@ -39,7 +39,7 @@ integrity @ rect(c(_, _), c(TopX1, TopY1), s(W1, H1)) , rect(c(_, _), c(TopX2, T
 	the rule triggers only when we add a new rect. This way, we use the 
 	new knowledge we have (i.e. the rect itself) to prune the obviously wrong maybes.
 */
-active_constraint @ rect(_, TopCoords, TopSize)  \ maybe(MaybeHintCoords, Possibilities) #passive<=>
+active_constraint @ rect(_, TopCoords, TopSize)  \ maybe(MaybeHintCoords, Possibilities) # passive<=>
 	overlaps((TopCoords, TopSize), Possibilities,[], Overlaps),
 	Overlaps \= []
 	|

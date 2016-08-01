@@ -1,3 +1,5 @@
+# really quick and dirty file to parse the logs and generate a Latex table.
+
 import sys,os,re
 from tabulate import tabulate
 from decimal import Decimal
@@ -5,7 +7,11 @@ from decimal import Decimal
 
 file_prefix = 'output_'
 logDir = sys.argv[1] + '/'
-hasGenerationStage = True if len(sys.argv) == 2 else False
+print(len(sys.argv))
+# in the prolog program, if there's a stage which is just to generate 
+# the input, before starting the actual search, then this should be true
+# if there isn't just pass some second argumend. God this is ugly.
+hasGenerationStage = True if len(sys.argv) == 3 else False
 timeoutPattern = re.compile("^Timeout is (\d+)$",re.MULTILINE)
 generationPattern = re.compile('^% (\S+) inferences, .+ in (\S+) seconds')
 searchPattern = re.compile("^% (\d+\.\d+|\d+) seconds cpu time for (\S+) inferences")
@@ -36,7 +42,7 @@ def problemGenerationInferencesAndTime(content):
 		a = re.match(p,line).groups()
 		return a[1],a[0]
 	except:
-		return "FAIL", "FAIL"
+		return "TIMED-OUT", "TIMED-OUT"
 
 def getProblemName(content):
 	return content[0].replace('begin-- ', '')
@@ -56,7 +62,7 @@ def getSearchStatistics(content, genSecs):
 
 	except Exception as ex:
 		# print(ex)
-		return "FAIL", "FAIL"
+		return "TIMED-OUT", "TIMED-OUT"
 
 def runBaby(files, logDir):
 	files.sort()
@@ -76,18 +82,18 @@ def runBaby(files, logDir):
 
 		searchSecs,searchInf = getSearchStatistics(logContent,genSecs)
 		# print(searchSecs,searchInf)
-		lines.append([problemName, searchSecs])
+		line = [problemName, searchSecs]
 		if hasGenerationStage:
-			lines.append(genSecs)
-
-	lines.sort()
+			line.append(genSecs)
+		lines.append(line)
+	lines.sort() # based on problem name
 	if hasGenerationStage:
 		headers = ['Name', 'Search Time', 'Problem generation time']
 	else:
 		headers = ['Name', 'Problem generation + Search Time']
 	table =  tabulate(lines, headers=headers, tablefmt='latex_booktabs')
 	iteration = logDir.replace('log', "").replace('/','')
-	caption ='\caption{%s}' % 'Iteration %s. Time is in seconds. Maximum run-time limit is %s '%(iteration, timeout)+'\n'
+	caption ='\caption{%s}' % 'Iteration %s. Time is in seconds. Maximum run-time limit is %s seconds. '%(iteration, timeout)+'\n'
 	label = '\label{tab:%s}'%iteration+'\n'
 	table = '\\begin{table}\n' +caption+ label+table + '\end{table}'
 	with open( logDir+'RESULT.latex','w') as save_file:

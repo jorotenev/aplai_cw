@@ -1,0 +1,28 @@
+begin-- tarek_052
+Timeout is 60
+Warning: /home/georgi/Projects/aplai/Sudoku/chrVP2_sudoku.pl:203:
+	Singleton variables: [Sorted]
+Starting tarek_052
+bucket(4,[8-9,6-3,2-8,4-5,5-7,3-1,7-4,9-2,1-6])
+bucket(2,[7-2,6-6,4-3,2-1,3-5,1-7,9-9,8-4,5-8])
+bucket(7,[8-8,7-3,5-2,3-9,2-6,9-4,1-1,6-5,4-7])
+bucket(6,[4-4,5-3,1-2,3-8,8-6,9-1,7-9,6-7,2-5])
+bucket(8,[8-2,6-4,2-3,1-8,3-6,9-7,7-5,5-9,4-1])
+bucket(3,[6-2,9-8,1-4,3-3,5-6,8-5,7-1,4-9,2-7])
+bucket(9,[4-6,6-8,2-2,7-7,5-1,9-5,1-9,8-3,3-4])
+bucket(1,[7-8,4-2,6-9,5-5,2-4,3-7,8-1,9-6,1-3])
+bucket(5,[4-8,5-4,3-2,1-5,7-6,8-7,9-3,6-1,2-9])
+can_start
+% Started at Mon Aug  1 14:55:05 2016
+% 27.132 seconds cpu time for 99,279,444 inferences
+% 8,629 atoms, 5,495 functors, 4,732 predicates, 69 modules, 387,274 VM-codes
+% 
+%                        Limit    Allocated       In use
+% Local  stack:    268,435,456      126,976        3,360 Bytes
+% Global stack:    268,435,456    1,044,464      801,400 Bytes
+% Trail  stack:    268,435,456      260,088       53,040 Bytes
+% 
+% 6 garbage collections gained 882,112 bytes in 0.003 seconds.
+% Stack shifts: 2 local, 4 global, 3 trail in 0.000 seconds
+% 1 threads, 0 finished threads used 0.000 seconds
+end-- tarek_052

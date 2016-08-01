@@ -75,7 +75,7 @@ def runBaby(files, logDir):
 	headers = ['Name', 'Search Time']
 	table =  tabulate(lines, headers=headers, tablefmt='latex_booktabs')
 	iteration = logDir.replace('log', "").replace('/','')
-	caption ='\caption{%s}' % 'Iteration %s. Time is in seconds. Maximum run-time limit is %s '%(iteration, timeout)+'\n'
+	caption ='\caption{%s}' % 'Iteration %s. Time is in seconds. Maximum run-time limit is %s seconds'%(iteration, timeout)+'\n'
 	label = '\label{tab:%s}'%iteration+'\n'
 	table = '\\begin{table}\n' +caption+ label+table + '\end{table}'
 	with open( logDir+'RESULT.latex','w') as save_file:

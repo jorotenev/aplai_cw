@@ -1,16 +1,16 @@
 begin-- helmut
-Timeout is 90
+Timeout is 1
 Starting helmut
-% 1,261,064 inferences, 0.135 CPU in 0.135 seconds (100% CPU, 9343697 Lips)
+% 65,546 inferences, 0.007 CPU in 0.007 seconds (100% CPU, 8944736 Lips)
 Maybes generated. CHR takes over now.
-% Started at Sat Jul 30 13:41:08 2016
-% 0.831 seconds cpu time for 4,925,242 inferences
-% 8,637 atoms, 5,484 functors, 4,721 predicates, 69 modules, 398,544 VM-codes
+% Started at Mon Aug  1 16:11:20 2016
+% 0.719 seconds cpu time for 3,824,110 inferences
+% 8,638 atoms, 5,474 functors, 4,710 predicates, 70 modules, 396,124 VM-codes
 % 
 %                        Limit    Allocated       In use
-% Local  stack:    268,435,456      126,976        1,584 Bytes
-% Global stack:    268,435,456    1,044,464      550,576 Bytes
-% Trail  stack:    268,435,456      260,088        3,160 Bytes
+% Local  stack:    268,435,456      126,976        2,432 Bytes
+% Global stack:    268,435,456    1,044,464      765,464 Bytes
+% Trail  stack:    268,435,456      260,088        6,392 Bytes
 % 
 % 6 garbage collections gained 882,160 bytes in 0.003 seconds.
 % Stack shifts: 2 local, 4 global, 3 trail in 0.000 seconds

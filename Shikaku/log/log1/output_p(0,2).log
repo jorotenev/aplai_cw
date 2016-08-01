@@ -1,18 +1,18 @@
 begin-- p(0,2)
-Timeout is 90
+Timeout is 1
 Starting p(0,2)
-% 4,820 inferences, 0.001 CPU in 0.001 seconds (100% CPU, 6147944 Lips)
+% 3,774 inferences, 0.001 CPU in 0.001 seconds (100% CPU, 6172274 Lips)
 Maybes generated. CHR takes over now.
-% Started at Sat Jul 30 13:41:09 2016
-% 0.750 seconds cpu time for 3,668,998 inferences
-% 8,637 atoms, 5,484 functors, 4,721 predicates, 69 modules, 398,544 VM-codes
+% Started at Mon Aug  1 16:11:21 2016
+% 0.714 seconds cpu time for 3,752,032 inferences
+% 8,638 atoms, 5,474 functors, 4,710 predicates, 70 modules, 396,124 VM-codes
 % 
 %                        Limit    Allocated       In use
-% Local  stack:    268,435,456      126,976        1,584 Bytes
-% Global stack:    268,435,456    1,044,464      531,424 Bytes
-% Trail  stack:    268,435,456      260,088        2,384 Bytes
+% Local  stack:    268,435,456      126,976        1,352 Bytes
+% Global stack:    268,435,456    1,044,464      747,024 Bytes
+% Trail  stack:    268,435,456      260,088        2,848 Bytes
 % 
-% 6 garbage collections gained 882,160 bytes in 0.003 seconds.
+% 6 garbage collections gained 882,160 bytes in 0.004 seconds.
 % Stack shifts: 2 local, 4 global, 3 trail in 0.000 seconds
 % 1 threads, 0 finished threads used 0.000 seconds
 ┌───┬───┬───┬───┬───┐

@@ -1,16 +1,16 @@
 begin-- tiny
-Timeout is 90
+Timeout is 1
 Starting tiny
-% 919 inferences, 0.000 CPU in 0.000 seconds (100% CPU, 4424587 Lips)
+% 612 inferences, 0.000 CPU in 0.000 seconds (100% CPU, 4255822 Lips)
 Maybes generated. CHR takes over now.
-% Started at Sat Jul 30 13:41:07 2016
-% 0.727 seconds cpu time for 3,665,097 inferences
-% 8,637 atoms, 5,484 functors, 4,721 predicates, 69 modules, 398,544 VM-codes
+% Started at Mon Aug  1 16:11:19 2016
+% 0.766 seconds cpu time for 3,747,970 inferences
+% 8,638 atoms, 5,474 functors, 4,710 predicates, 70 modules, 396,124 VM-codes
 % 
 %                        Limit    Allocated       In use
-% Local  stack:    268,435,456      126,976        1,584 Bytes
-% Global stack:    268,435,456    1,044,464      517,200 Bytes
-% Trail  stack:    268,435,456      260,088          880 Bytes
+% Local  stack:    268,435,456      126,976        1,352 Bytes
+% Global stack:    268,435,456    1,044,464      739,752 Bytes
+% Trail  stack:    268,435,456      260,088          968 Bytes
 % 
 % 6 garbage collections gained 882,160 bytes in 0.003 seconds.
 % Stack shifts: 2 local, 4 global, 3 trail in 0.000 seconds

@@ -1,0 +1,6 @@
+begin-- sudowiki_nb49
+Timeout is 60
+Warning: /home/georgi/Projects/aplai/Sudoku/chrVP2_sudoku.pl:203:
+	Singleton variables: [Sorted]
+Starting sudowiki_nb49
+end-- sudowiki_nb49

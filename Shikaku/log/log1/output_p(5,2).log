@@ -1,3 +1,3 @@
 begin-- p(5,2)
-Timeout is 90
+Timeout is 1
 end-- p(5,2)
